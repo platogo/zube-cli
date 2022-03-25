@@ -89,6 +89,21 @@ func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 	return currentPerson
 }
 
+func (client *Client) FetchCards() []models.Card {
+	var cards models.Cards
+
+	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/cards"}
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatal("Failed to fetch list of cards")
+	}
+
+	json.Unmarshal(body, &cards)
+	return cards.Data
+}
+
 // Wrapper around `performAPIRequestURL` for e.g. GET requests with no request body
 func (client *Client) performAPIRequestURLNoBody(method string, url *url.URL) ([]byte, error) {
 	return client.performAPIRequestURL(method, url, nil)

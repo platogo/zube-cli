@@ -2,7 +2,16 @@ package models
 
 // Zube Response resources as defined in the official documentation: https://zube.io/docs/api
 
-type PaginatedResource struct {
+type Pagination struct {
+	Page       int `json:"page"`
+	PerPage    int `json:"per_page"`
+	TotalPages int `json:"total_pages"`
+	Total      int `json:"total"`
+}
+
+type Cards struct {
+	Pagination
+	Data []Card `json:"data"`
 }
 
 type ZubeAccessToken struct {
