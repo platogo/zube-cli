@@ -19,18 +19,18 @@ const (
 
 var UserAgent = "Zube-CLI"
 
+type ZubeAccessTokenResponse struct {
+	AccessToken string `json:"access_token"`
+}
+
 type Client struct {
 	Host        string
 	ClientId    string // Your unique client ID
 	AccessToken string // An encoded access JWT valid for 24h to the Zube API
 }
 
-type ZubeAccessTokenResponse struct {
-	AccessToken string `json:"access_token"`
-}
-
-func NewClient(host, clientId string) *Client {
-	return &Client{Host: host, ClientId: clientId}
+func NewClient(clientId string) *Client {
+	return &Client{Host: ZubeHost, ClientId: clientId}
 }
 
 func NewClientWithAccessToken(host, clientId, accessToken string) *Client {
@@ -60,6 +60,7 @@ func zubeRequest(method, url string, body io.Reader, clientId, token string) (*h
 	}
 	req.Header.Add("Authorization", "Bearer "+token)
 	req.Header.Add("X-Client-ID", clientId)
+	req.Header.Add("User-Agent", UserAgent)
 	req.Header.Add("Accept", "application/json")
 	return req, nil
 }
