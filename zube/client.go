@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/platogo/zube-cli/zube/models"
 )
 
 const (
@@ -20,19 +21,6 @@ const (
 )
 
 var UserAgent = "Zube-CLI"
-
-// Response types
-type ZubeAccessToken struct {
-	AccessToken string `json:"access_token"`
-}
-
-type CurrentPerson struct {
-	Id           int    `json:"id"`
-	AvatarPath   string `json:"avatar_path"`
-	Name         string `json:"name"`
-	UserName     string `json:"username"`
-	GithubUserId int    `json:"github_user_id"`
-}
 
 // Request parameter struct definitions
 type Pagination struct {
@@ -58,9 +46,9 @@ type Query struct {
 }
 
 type Client struct {
-	ZubeAccessToken // An encoded access JWT valid for 24h to the Zube API
-	Host            string
-	ClientId        string // Your unique client ID
+	models.ZubeAccessToken // An encoded access JWT valid for 24h to the Zube API
+	Host                   string
+	ClientId               string // Your unique client ID
 }
 
 func NewClient(clientId string) *Client {
@@ -68,7 +56,7 @@ func NewClient(clientId string) *Client {
 }
 
 func NewClientWithAccessToken(clientId, accessToken string) *Client {
-	return &Client{Host: ZubeHost, ClientId: clientId, ZubeAccessToken: ZubeAccessToken{AccessToken: accessToken}}
+	return &Client{Host: ZubeHost, ClientId: clientId, ZubeAccessToken: models.ZubeAccessToken{AccessToken: accessToken}}
 }
 
 // Fetch the access token JWT from Zube API and set it for the client. If it already exists, refresh it.
@@ -81,14 +69,14 @@ func (client *Client) RefreshAccessToken(key *rsa.PrivateKey) (string, error) {
 		return "", err
 	}
 	body, err := ioutil.ReadAll(rsp.Body)
-	data := ZubeAccessToken{}
+	data := models.ZubeAccessToken{}
 	json.Unmarshal(body, &data)
 	client.AccessToken = string(data.AccessToken)
 	return client.AccessToken, err
 }
 
-func (client *Client) FetchCurrentPerson() CurrentPerson {
-	currentPerson := CurrentPerson{}
+func (client *Client) FetchCurrentPerson() models.CurrentPerson {
+	currentPerson := models.CurrentPerson{}
 	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/current_person"}
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
