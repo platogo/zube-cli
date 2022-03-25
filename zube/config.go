@@ -96,6 +96,10 @@ func (profile *Profile) IsTokenValid() bool {
 }
 
 func parseConfigFile(filename string) (Profile, error) {
+	if !IsConfigFilePresent() {
+		log.Fatalln("Config file does not exist!")
+	}
+
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err.Error())
