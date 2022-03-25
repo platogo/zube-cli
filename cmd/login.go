@@ -18,12 +18,8 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
-	"path/filepath"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/platogo/zube-cli/zube"
 	"github.com/spf13/cobra"
 )
@@ -36,17 +32,9 @@ var loginCmd = &cobra.Command{
 	Short: "Login to Zube with your client ID and private key.",
 	Long:  `A command for debugging the login flow to Zube.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		homedir, err := os.UserHomeDir()
-		privateKeyFilePath := filepath.Join(homedir, ".ssh", "zube_api_key.pem") // TODO: Make configurable in config
-		privateKeyFile, err := ioutil.ReadFile(privateKeyFilePath)
-
 		client := zube.NewClient(ClientId)
 
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKeyFile)
+		privateKey, err := zube.GetPrivateKey()
 
 		if err != nil {
 			log.Fatal(err)

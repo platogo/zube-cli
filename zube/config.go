@@ -37,9 +37,27 @@ func ParseDefaultConfig() (Profile, error) {
 	return parseConfigFile(ConfigFile())
 }
 
+func (profile *Profile) SaveToConfig() error {
+	data, err := yaml.Marshal(profile)
+
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	err2 := ioutil.WriteFile(ConfigFile(), data, 0)
+
+	if err2 != nil {
+		log.Fatal(err2)
+		return err2
+	}
+
+	return nil
+}
+
 // Check if the locally saved Access Token JWT is still valid.
-func (c *Profile) IsAccessTokenExpired() (bool, error) {
-	token, _, err := new(jwt.Parser).ParseUnverified(c.AccessToken, jwt.MapClaims{})
+func (profile *Profile) IsAccessTokenExpired() (bool, error) {
+	token, _, err := new(jwt.Parser).ParseUnverified(profile.AccessToken, jwt.MapClaims{})
 
 	if err != nil {
 		log.Fatal(err)
@@ -66,6 +84,15 @@ func (c *Profile) IsAccessTokenExpired() (bool, error) {
 	isExpired := expTime.Unix() < now.Unix()
 
 	return isExpired, nil
+}
+
+func (profile *Profile) IsTokenValid() bool {
+	if profile.AccessToken != "" {
+		isExp, _ := profile.IsAccessTokenExpired()
+		return !isExp
+	}
+
+	return false
 }
 
 func parseConfigFile(filename string) (Profile, error) {

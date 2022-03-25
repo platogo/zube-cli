@@ -9,9 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/platogo/zube-cli/zube/models"
 )
 
@@ -51,17 +49,19 @@ type Client struct {
 	ClientId               string // Your unique client ID
 }
 
+// Constructs a new client with only host and Client ID configured, enough to make an access token request.
 func NewClient(clientId string) *Client {
 	return &Client{Host: ZubeHost, ClientId: clientId}
 }
 
+// Like `NewClient`, but requires and access token ready to be used for API requests.
 func NewClientWithAccessToken(clientId, accessToken string) *Client {
 	return &Client{Host: ZubeHost, ClientId: clientId, ZubeAccessToken: models.ZubeAccessToken{AccessToken: accessToken}}
 }
 
 // Fetch the access token JWT from Zube API and set it for the client. If it already exists, refresh it.
 func (client *Client) RefreshAccessToken(key *rsa.PrivateKey) (string, error) {
-	refreshJWT, err := generateRefreshJWT(client.ClientId, key)
+	refreshJWT, err := GenerateRefreshJWT(client.ClientId, key)
 
 	req, _ := zubeAccessTokenRequest(http.MethodPost, ApiUrl+"users/tokens", nil, client.ClientId, refreshJWT)
 	rsp, err := http.DefaultClient.Do(req)
@@ -142,19 +142,4 @@ func zubeAccessTokenRequest(method, url string, body io.Reader, clientId, refres
 	req.Header.Add("User-Agent", UserAgent)
 	req.Header.Add("Accept", "application/json")
 	return req, nil
-}
-
-// Create a refresh JWT valid for one minute, used to fetch an access token JWT
-func generateRefreshJWT(clientId string, key *rsa.PrivateKey) (string, error) {
-	now := time.Now()
-	claims := &jwt.StandardClaims{
-		IssuedAt:  now.Unix(),
-		ExpiresAt: (now.Add(time.Minute)).Unix(),
-		Issuer:    clientId,
-	}
-	if err := claims.Valid(); err != nil {
-		log.Fatalf("invalid claims: %s", err)
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
-	return token.SignedString(key)
 }

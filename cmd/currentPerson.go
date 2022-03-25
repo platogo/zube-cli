@@ -25,26 +25,48 @@ import (
 )
 
 // currentPersonCmd represents the currentPerson command
+// This command is mostly for reference on how to build out the other commands
 var currentPersonCmd = &cobra.Command{
 	Use:   "currentPerson",
 	Short: "Show info about your own user",
 	Run: func(cmd *cobra.Command, args []string) {
+		// Load any existing cached config
 		profile, err := zube.ParseDefaultConfig()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalln(err)
 			return
 		}
 
-		if isExp, _ := profile.IsAccessTokenExpired(); isExp {
-			log.Fatal("Access Token is expired!")
-			// TODO: If the token is expired, attempt to refresh it and resave it into the profile
-			return
+		// Prepare a client
+		client := zube.NewClient(profile.ClientId)
+
+		if profile.IsTokenValid() {
+			client.AccessToken = profile.AccessToken
+		} else {
+			// Refresh client token and dump it to profile
+			privateKey, err := zube.GetPrivateKey()
+			if err != nil {
+				log.Fatalln(err)
+				return
+			}
+
+			profile.AccessToken, err = client.RefreshAccessToken(privateKey)
+
+			if err != nil {
+				log.Fatalln(err)
+				return
+			}
+
+			ok := profile.SaveToConfig()
+
+			if ok != nil {
+				log.Fatal("Failed to save current configuration:", ok)
+			}
 		}
 
-		// Construct client
-		client := zube.NewClientWithAccessToken(profile.ClientId, profile.AccessToken)
 		// Call public client API to fetch resource that is needed, then print formatted output
-		fmt.Printf("%+v", client.FetchCurrentPerson())
+		person := client.FetchCurrentPerson()
+		fmt.Printf("Username: %s\nName: %s\n", person.Username, person.Name)
 	},
 }
 
