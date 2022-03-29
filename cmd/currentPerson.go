@@ -37,32 +37,8 @@ var currentPersonCmd = &cobra.Command{
 			return
 		}
 
-		// Prepare a client
-		client := zube.NewClient(profile.ClientId)
-
-		if profile.IsTokenValid() {
-			client.AccessToken = profile.AccessToken
-		} else {
-			// Refresh client token and dump it to profile
-			privateKey, err := zube.GetPrivateKey()
-			if err != nil {
-				log.Fatalln(err)
-				return
-			}
-
-			profile.AccessToken, err = client.RefreshAccessToken(privateKey)
-
-			if err != nil {
-				log.Fatalln(err)
-				return
-			}
-
-			ok := profile.SaveToConfig()
-
-			if ok != nil {
-				log.Fatal("Failed to save current configuration:", ok)
-			}
-		}
+		// Prepare a client using the loaded profile
+		client, _ := zube.NewClientWithProfile(&profile)
 
 		// Call public client API to fetch resource that is needed, then print formatted output
 		person := client.FetchCurrentPerson()

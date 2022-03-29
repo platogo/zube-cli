@@ -34,6 +34,27 @@ type Assignee struct {
 	Person
 }
 
+type Account struct {
+	Id                int
+	DisplayName       string `json:"display_name"`
+	Status            string
+	CreatedAt         string `json:"created_at"`
+	UpdatedAt         string `json:"updated_at"`
+	PrivateUsersCount int    `json:"private_users_count"`
+	FirstBillableAt   string `json:"first_billable_at"`
+	Slug              string
+	HasGithubBilling  string `json:"has_github_billing"`
+	Discount          int
+	HasAnnualBilling  bool `json:"has_annual_billing"`
+	Seats             int
+	AnnualAmount      float64 `json:"annual_amount"`
+}
+
+type Accounts struct {
+	Pagination
+	Data []Account
+}
+
 type Epic struct {
 	Id          int    `json:"id"`
 	WorkspaceId int    `json:"workspace_id"`

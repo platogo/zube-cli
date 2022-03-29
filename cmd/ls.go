@@ -8,7 +8,10 @@ import (
 	"fmt"
 	"log"
 
+	. "github.com/logrusorgru/aurora"
+	"github.com/platogo/zube-cli/utils"
 	"github.com/platogo/zube-cli/zube"
+	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
 )
 
@@ -23,21 +26,10 @@ var lsCmd = &cobra.Command{
 			return
 		}
 
-		if isExp, _ := profile.IsAccessTokenExpired(); isExp {
-			log.Fatal("Access Token is expired!")
-			// TODO: If the token is expired, attempt to refresh it and resave it into the profile
-			return
-		}
-
-		// Construct client
-		client := zube.NewClientWithAccessToken(profile.ClientId, profile.AccessToken)
-		// Call public client API to fetch resource that is needed, then print formatted output
+		client, _ := zube.NewClientWithProfile(&profile)
 
 		cards := client.FetchCards()
-
-		for _, card := range cards {
-			fmt.Printf("%s \n", card.Title)
-		}
+		printCards(&cards)
 	},
 }
 
@@ -53,4 +45,16 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// lsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func printCards(cards *[]models.Card) {
+	const maxTitleWidth = 34
+	formatString := "%-6d %" + fmt.Sprint(maxTitleWidth) + "s... %10s \n"
+	// Print header
+	fmt.Printf("%-6s %"+fmt.Sprint(maxTitleWidth+3)+"s %10s\n", Reverse(" No."), Reverse("Title              "), Reverse(" State  "))
+
+	// Print rows
+	for _, card := range *cards {
+		fmt.Printf(formatString, BrightGreen(card.Number), BrightWhite(utils.TruncateString(card.Title, maxTitleWidth)), White(card.Status))
+	}
 }

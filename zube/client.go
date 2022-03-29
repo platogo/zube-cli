@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -49,6 +50,36 @@ type Client struct {
 	ClientId               string // Your unique client ID
 }
 
+// Sets up a client with a profile, and caches it if needed
+func NewClientWithProfile(profile *Profile) (*Client, error) {
+	client := NewClient(profile.ClientId)
+
+	if profile.IsTokenValid() {
+		client.AccessToken = profile.AccessToken
+	} else {
+		// Refresh client token and dump it to profile
+		privateKey, err := GetPrivateKey()
+		if err != nil {
+			log.Fatalln(err)
+			return client, err
+		}
+
+		profile.AccessToken, err = client.RefreshAccessToken(privateKey)
+
+		if err != nil {
+			log.Fatalln(err)
+			return client, err
+		}
+
+		ok := profile.SaveToConfig()
+
+		if ok != nil {
+			log.Fatal("Failed to save current configuration:", ok)
+		}
+	}
+	return client, nil
+}
+
 // Constructs a new client with only host and Client ID configured, enough to make an access token request.
 func NewClient(clientId string) *Client {
 	return &Client{Host: ZubeHost, ClientId: clientId}
@@ -89,11 +120,13 @@ func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 	return currentPerson
 }
 
+// Fetch and return an array of `Card`s
 func (client *Client) FetchCards() []models.Card {
 	var cards models.Cards
 
-	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/cards"}
+	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/cards", RawQuery: "where%5Bstate%5D=open"}
 
+	// TODO: Support pagination
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
 	if err != nil {
@@ -102,6 +135,22 @@ func (client *Client) FetchCards() []models.Card {
 
 	json.Unmarshal(body, &cards)
 	return cards.Data
+}
+
+// Fetch and return an array of `Account`s
+func (client *Client) FetchAccounts() []models.Account {
+	var accounts models.Accounts
+
+	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/accounts"}
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatal("Failed to fetch list of accounts")
+	}
+
+	json.Unmarshal(body, &accounts)
+	return accounts.Data
 }
 
 // Wrapper around `performAPIRequestURL` for e.g. GET requests with no request body
@@ -122,6 +171,8 @@ func (client *Client) performAPIRequestURL(method string, url *url.URL, body io.
 	if body != nil && (method == http.MethodPost || method == http.MethodPut || method == http.MethodPatch) {
 		req.Header.Add("Accept", "application/json")
 	}
+
+	fmt.Println("Making request to URL: ", url.String())
 
 	resp, _ := http.DefaultClient.Do(req)
 
