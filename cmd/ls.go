@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 Daniils Petrovs <daniils@platogo.com>
 
 */
 package cmd
@@ -28,8 +28,10 @@ var lsCmd = &cobra.Command{
 
 		client, _ := zube.NewClientWithProfile(&profile)
 
-		cards := client.FetchCards()
-		printCards(&cards)
+		if parentCmd := cmd.Parent().Name(); parentCmd == "card" {
+			cards := client.FetchCards()
+			printCards(&cards)
+		}
 	},
 }
 

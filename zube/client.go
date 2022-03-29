@@ -108,7 +108,7 @@ func (client *Client) RefreshAccessToken(key *rsa.PrivateKey) (string, error) {
 
 func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 	currentPerson := models.CurrentPerson{}
-	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/current_person"}
+	url := zubeURL("/api/current_person", "")
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
@@ -124,7 +124,7 @@ func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 func (client *Client) FetchCards() []models.Card {
 	var cards models.Cards
 
-	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/cards", RawQuery: "where%5Bstate%5D=open"}
+	url := zubeURL("/api/cards", "where%5Bstate%5D=open")
 
 	// TODO: Support pagination
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
@@ -141,7 +141,7 @@ func (client *Client) FetchCards() []models.Card {
 func (client *Client) FetchAccounts() []models.Account {
 	var accounts models.Accounts
 
-	url := url.URL{Scheme: "https", Host: ZubeHost, Path: "/api/accounts"}
+	url := zubeURL("/api/accounts", "")
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
@@ -193,4 +193,8 @@ func zubeAccessTokenRequest(method, url string, body io.Reader, clientId, refres
 	req.Header.Add("User-Agent", UserAgent)
 	req.Header.Add("Accept", "application/json")
 	return req, nil
+}
+
+func zubeURL(path, query string) url.URL {
+	return url.URL{Scheme: "https", Host: ZubeHost, Path: path, RawQuery: query}
 }

@@ -12,7 +12,7 @@ Make sure you have `go` and `make` installed, then run
 make
 ```
 
-`zube` expects a configuration file with your `client_id` (located at `~/config/zube/config.yml`)
+`zube` expects a configuration file with your **client_id** (located at `~/config/zube/config.yml`)
 
 You can find out how to get the `client_id` in the [offical Zube docs](https://zube.io/docs/api#authentication-section).
 
@@ -21,6 +21,8 @@ Example of a `config.yml`:
 ```yaml
 client_id: some-super-long-client-id
 ```
+
+You must also save your **Zube private key** `.pem` file in `~/.ssh/zube_api_key.pem`
 
 This file is also used to cache your `access token`, so make sure only you have access to it.
 
