@@ -45,6 +45,27 @@ type Query struct {
 	Filter
 }
 
+// Encodes everything in `Query` into a flat Zube query string
+func (query *Query) Encode() string {
+	q := url.Values{}
+
+	// Pagination
+    q.Add("page", query.Pagination.Page)
+    q.Add("per_page", query.Pagination.PerPage)
+	// Order
+	q.Add("order[by]", query.Order.By)
+	q.Add("order[direction]", query.Order.Direction)
+	// Filter
+	for field, val := range query.Filter.Where {
+		q.Add(fmt.Sprintf("where[%s]", field), fmt.Sprint(val))
+	}
+
+	for _, col := range query.Filter.Select {
+		q.Add("select[]", col)
+	}
+	return q.Encode()
+}
+
 type Client struct {
 	models.ZubeAccessToken // An encoded access JWT valid for 24h to the Zube API
 	Host                   string
@@ -199,23 +220,5 @@ func zubeAccessTokenRequest(method, url string, body io.Reader, clientId, refres
 }
 
 func zubeURL(path string, query Query) url.URL {
-	q := url.Values{}
-	// TODO: Move to a method for Query
-
-	// Pagination
-    q.Add("page", query.Pagination.Page)
-    q.Add("per_page", query.Pagination.PerPage)
-	// Order
-	q.Add("order[by]", query.Order.By)
-	q.Add("order[direction]", query.Order.Direction)
-	// Filter
-	for field, val := range query.Filter.Where {
-		q.Add(fmt.Sprintf("where[%s]", field), fmt.Sprint(val))
-	}
-
-	for _, col := range query.Filter.Select {
-		q.Add("select[]", col)
-	}
-
-	return url.URL{Scheme: "https", Host: ZubeHost, Path: path, RawQuery: q.Encode()}
+	return url.URL{Scheme: "https", Host: ZubeHost, Path: path, RawQuery: query.Encode()}
 }
