@@ -122,7 +122,7 @@ func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 
 // Fetch and return an array of `Card`s
 func (client *Client) FetchCards() []models.Card {
-	var cards models.Cards
+	var response models.PaginatedResponse[models.Card]
 
 	url := zubeURL("/api/cards", "where%5Bstate%5D=open")
 
@@ -133,13 +133,13 @@ func (client *Client) FetchCards() []models.Card {
 		log.Fatal("Failed to fetch list of cards")
 	}
 
-	json.Unmarshal(body, &cards)
-	return cards.Data
+	json.Unmarshal(body, &response)
+	return response.Data
 }
 
 // Fetch and return an array of `Account`s
 func (client *Client) FetchAccounts() []models.Account {
-	var accounts models.Accounts
+	var response models.PaginatedResponse[models.Account]
 
 	url := zubeURL("/api/accounts", "")
 
@@ -149,8 +149,8 @@ func (client *Client) FetchAccounts() []models.Account {
 		log.Fatal("Failed to fetch list of accounts")
 	}
 
-	json.Unmarshal(body, &accounts)
-	return accounts.Data
+	json.Unmarshal(body, &response)
+	return response.Data
 }
 
 // Wrapper around `performAPIRequestURL` for e.g. GET requests with no request body

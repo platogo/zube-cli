@@ -9,9 +9,13 @@ type Pagination struct {
 	Total      int `json:"total"`
 }
 
-type Cards struct {
+type Data[T any] struct {
+	Data []T
+}
+
+type PaginatedResponse[T any] struct {
 	Pagination
-	Data []Card `json:"data"`
+	Data []T
 }
 
 type ZubeAccessToken struct {
@@ -48,11 +52,6 @@ type Account struct {
 	HasAnnualBilling  bool `json:"has_annual_billing"`
 	Seats             int
 	AnnualAmount      float64 `json:"annual_amount"`
-}
-
-type Accounts struct {
-	Pagination
-	Data []Account
 }
 
 type Epic struct {
