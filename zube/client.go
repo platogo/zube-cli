@@ -22,6 +22,7 @@ const (
 var UserAgent = "Zube-CLI"
 
 // Request parameter struct definitions
+
 type Pagination struct {
 	Page    string // Results page to paginate to
 	PerPage string // How many results to fetch per page, defaults to 30
@@ -108,7 +109,7 @@ func (client *Client) RefreshAccessToken(key *rsa.PrivateKey) (string, error) {
 
 func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 	currentPerson := models.CurrentPerson{}
-	url := zubeURL("/api/current_person", "")
+	url := zubeURL("/api/current_person", Query{})
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
@@ -124,7 +125,9 @@ func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 func (client *Client) FetchCards() []models.Card {
 	var response models.PaginatedResponse[models.Card]
 
-	url := zubeURL("/api/cards", "where%5Bstate%5D=open")
+	query := Query{Filter: Filter{Where: map[string]any{"state": "open"}}}
+
+	url := zubeURL("/api/cards", query)
 
 	// TODO: Support pagination
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
@@ -141,7 +144,7 @@ func (client *Client) FetchCards() []models.Card {
 func (client *Client) FetchAccounts() []models.Account {
 	var response models.PaginatedResponse[models.Account]
 
-	url := zubeURL("/api/accounts", "")
+	url := zubeURL("/api/accounts", Query{})
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
@@ -195,6 +198,24 @@ func zubeAccessTokenRequest(method, url string, body io.Reader, clientId, refres
 	return req, nil
 }
 
-func zubeURL(path, query string) url.URL {
-	return url.URL{Scheme: "https", Host: ZubeHost, Path: path, RawQuery: query}
+func zubeURL(path string, query Query) url.URL {
+	q := url.Values{}
+	// TODO: Move to a method for Query
+
+	// Pagination
+    q.Add("page", query.Pagination.Page)
+    q.Add("per_page", query.Pagination.PerPage)
+	// Order
+	q.Add("order[by]", query.Order.By)
+	q.Add("order[direction]", query.Order.Direction)
+	// Filter
+	for field, val := range query.Filter.Where {
+		q.Add(fmt.Sprintf("where[%s]", field), fmt.Sprint(val))
+	}
+
+	for _, col := range query.Filter.Select {
+		q.Add("select[]", col)
+	}
+
+	return url.URL{Scheme: "https", Host: ZubeHost, Path: path, RawQuery: q.Encode()}
 }
