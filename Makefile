@@ -19,4 +19,8 @@ run:
 test:
 	go test -v ./zube
 
+format:
+	@echo "Formatting the entire project"
+	go fmt
+
 all: test build

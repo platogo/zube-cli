@@ -14,7 +14,7 @@ func TestQueryEncode(t *testing.T) {
 	var wants = []string{
 		"order%5Bby%5D=id&order%5Bdirection%5D=&page=1&per_page=",
 		"order%5Bby%5D=title&order%5Bdirection%5D=asc&page=&per_page=",
-		"order%5Bby%5D=&order%5Bdirection%5D=&page=&per_page=&select%5B%5D=id&select%5B%5D=title&where%5Bid%5D=123"
+		"order%5Bby%5D=&order%5Bdirection%5D=&page=&per_page=&select%5B%5D=id&select%5B%5D=title&where%5Bid%5D=123",
 	}
 
 	for i := 0; i < 3; i++ {

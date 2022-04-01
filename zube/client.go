@@ -50,8 +50,8 @@ func (query *Query) Encode() string {
 	q := url.Values{}
 
 	// Pagination
-    q.Add("page", query.Pagination.Page)
-    q.Add("per_page", query.Pagination.PerPage)
+	q.Add("page", query.Pagination.Page)
+	q.Add("per_page", query.Pagination.PerPage)
 	// Order
 	q.Add("order[by]", query.Order.By)
 	q.Add("order[direction]", query.Order.Direction)
@@ -143,12 +143,10 @@ func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 }
 
 // Fetch and return an array of `Card`s
-func (client *Client) FetchCards() []models.Card {
+func (client *Client) FetchCards(query *Query) []models.Card {
 	var response models.PaginatedResponse[models.Card]
 
-	query := Query{Filter: Filter{Where: map[string]any{"state": "open"}}}
-
-	url := zubeURL("/api/cards", query)
+	url := zubeURL("/api/cards", *query)
 
 	// TODO: Support pagination
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)

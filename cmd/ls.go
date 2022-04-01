@@ -13,6 +13,7 @@ import (
 	"github.com/platogo/zube-cli/zube"
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 // lsCmd represents the ls command
@@ -29,7 +30,8 @@ var lsCmd = &cobra.Command{
 		client, _ := zube.NewClientWithProfile(&profile)
 
 		if parentCmd := cmd.Parent().Name(); parentCmd == "card" {
-			cards := client.FetchCards()
+			query := newQueryFromFlags(cmd.LocalFlags())
+			cards := client.FetchCards(&query)
 			printCards(&cards)
 		}
 	},
@@ -38,25 +40,73 @@ var lsCmd = &cobra.Command{
 func init() {
 	cardCmd.AddCommand(lsCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// lsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// lsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	lsCmd.Flags().Int("id", 0, "Filter by card internal ID")
+	lsCmd.Flags().String("category", "", "Filter by category name")
+	lsCmd.Flags().Int("epic-id", 0, "Filter by epic ID")
+	lsCmd.Flags().Int("number", 0, "Filter by card number")
+	lsCmd.Flags().Int("priority", -1, "Filter by priority")
+	lsCmd.Flags().Int("project-id", 0, "Filter by project ID")
+	lsCmd.Flags().Int("sprint-id", 0, "Filter by sprint ID")
+	lsCmd.Flags().String("state", "", "Filter by card state")
+	lsCmd.Flags().String("status", "", "Filter by card status")
 }
 
 func printCards(cards *[]models.Card) {
 	const maxTitleWidth = 34
 	formatString := "%-6d %" + fmt.Sprint(maxTitleWidth) + "s... %10s \n"
 	// Print header
-	fmt.Printf("%-6s %"+fmt.Sprint(maxTitleWidth+3)+"s %10s\n", Reverse(" No."), Reverse("Title              "), Reverse(" State  "))
+	fmt.Printf("%-6s %"+fmt.Sprint(maxTitleWidth+3)+"s %10s\n", Reverse(" No."), Reverse("Title              "), Reverse(" Status  "))
 
 	// Print rows
 	for _, card := range *cards {
 		fmt.Printf(formatString, BrightGreen(card.Number), BrightWhite(utils.TruncateString(card.Title, maxTitleWidth)), White(card.Status))
 	}
+}
+
+func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {
+	where := make(map[string]any)
+
+	id, ok := flags.GetInt("id")
+	if ok == nil && id != 0 {
+		where["id"] = id
+	}
+
+	category, ok := flags.GetString("category")
+	if ok == nil && category != "" {
+		where["category_name"] = category
+	}
+
+	if epicId, ok := flags.GetInt("epic-id"); ok == nil && epicId != 0 {
+		where["epic_id"] = epicId
+	}
+
+	if number, ok := flags.GetInt("number"); ok == nil && number != 0 {
+		where["number"] = number
+	}
+
+	if priority, ok := flags.GetInt("priority"); ok == nil && priority >= 0 {
+		where["priority"] = priority
+	}
+
+	if projectId, ok := flags.GetInt("project-id"); ok == nil && projectId != 0 {
+		where["project_id"] = projectId
+	}
+
+	if sprintId, ok := flags.GetInt("sprint-id"); ok == nil && sprintId != 0 {
+		where["sprint_id"] = sprintId
+	}
+
+	state, ok := flags.GetString("state")
+	if ok == nil && state != "" {
+		where["state"] = state
+	}
+
+	status, ok := flags.GetString("status")
+	if ok == nil && status != "" {
+		where["status"] = status
+	}
+	selectedCols := [4]string{"number", "title", "status", "category_name"}
+	filter := zube.Filter{Where: where, Select: selectedCols[:]}
+
+	return zube.Query{Filter: filter}
 }
