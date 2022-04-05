@@ -38,3 +38,14 @@ $ zube currentPerson
 Username: Daniils-Petrovs
 Name: Daniils Petrovs
 ```
+
+To list cards by a filter (e.g. by `status`), you would do:
+
+```bash
+$ zube card ls --status done
+
+Number Title                                          Status
+------ ---------------------------------------------- ----------
+13260  Use matrix in github build actions...          done
+13252  Fix export timestamp...                        done
+```

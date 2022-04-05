@@ -194,8 +194,6 @@ func (client *Client) performAPIRequestURL(method string, url *url.URL, body io.
 		req.Header.Add("Accept", "application/json")
 	}
 
-	fmt.Println("Making request to URL: ", url.String())
-
 	resp, _ := http.DefaultClient.Do(req)
 
 	respBody, err := ioutil.ReadAll(resp.Body)
