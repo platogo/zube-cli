@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/InVisionApp/tabular"
 	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/utils"
 	"github.com/platogo/zube-cli/zube"
@@ -52,15 +53,17 @@ func init() {
 }
 
 func printCards(cards *[]models.Card) {
-	const maxTitleWidth = 34
-	formatString := "%-6d %" + fmt.Sprint(maxTitleWidth) + "s... %10s \n"
-	// Print header
-	fmt.Printf("%-6s %"+fmt.Sprint(maxTitleWidth+3)+"s %10s\n", Reverse(" No."), Reverse("Title              "), Reverse(" Status  "))
+	tab := tabular.New()
 
-	// Print rows
+	tab.Col("no", "Number", 6)
+	tab.Col("title", "Title", 46)
+	tab.Col("status", "Status", 10)
+
+	format := tab.Print("no", "title", "status")
 	for _, card := range *cards {
-		fmt.Printf(formatString, BrightGreen(card.Number), BrightWhite(utils.TruncateString(card.Title, maxTitleWidth)), White(card.Status))
+		fmt.Printf(format, BrightGreen(card.Number), utils.TruncateString(card.Title, 40)+"...", card.Status)
 	}
+
 }
 
 func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {

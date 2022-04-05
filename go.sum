@@ -1,3 +1,5 @@
+github.com/InVisionApp/tabular v0.3.0 h1:4DGJoBZRTcgd/O+YgfG7/9bXAQy01tSJxrxWEuHVgnM=
+github.com/InVisionApp/tabular v0.3.0/go.mod h1:/G6t7qe0ZULisB+FjMsB0Qu0mtJ2CZldq92nXWjfHGI=
 github.com/cpuguy83/go-md2man/v2 v2.0.1/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
