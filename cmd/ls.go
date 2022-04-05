@@ -61,9 +61,12 @@ func printCards(cards *[]models.Card) {
 
 	format := tab.Print("no", "title", "status")
 	for _, card := range *cards {
-		fmt.Printf(format, BrightGreen(card.Number), utils.TruncateString(card.Title, 40)+"...", card.Status)
+		fmt.Printf(format,
+			BrightGreen(card.Number),
+			utils.TruncateString(card.Title, 40)+"...",
+			utils.SnakeCaseToTitleCase(card.Status),
+		)
 	}
-
 }
 
 func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {
