@@ -4,12 +4,13 @@
 
 ## Setup
 
-### Build
+### Build & Install
 
 Make sure you have `go` and `make` installed, then run
 
 ```bash
 make
+make install
 ```
 
 `zube` expects a configuration file with your **client_id** (located at `~/config/zube/config.yml`)

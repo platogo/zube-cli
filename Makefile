@@ -1,5 +1,9 @@
 BINARY_NAME=zube
 
+PREFIX := /usr/local
+
+all: test build
+
 build:
 	go build -o bin/${BINARY_NAME} .
 
@@ -23,4 +27,5 @@ format:
 	@echo "Formatting the entire project"
 	go fmt
 
-all: test build
+install: ./bin/$(BINARY_NAME)
+	install ./bin/$(BINARY_NAME) $(PREFIX)/bin/
