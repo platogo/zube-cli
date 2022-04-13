@@ -48,7 +48,7 @@ type Timestamps struct {
 }
 
 type Account struct {
-	Id          int
+	Id          int    `json:"id"`
 	DisplayName string `json:"display_name"`
 	Status      string `json:"status"`
 	Timestamps

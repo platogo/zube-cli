@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewQueryFromFlags(t *testing.T) {
-	example := lsCmd.Flags()
+	example := cardLsCmd.Flags()
 
 	example.Set("category", "Inbox")
 	example.Set("priority", "3")

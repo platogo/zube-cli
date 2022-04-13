@@ -17,9 +17,8 @@ import (
 	"github.com/spf13/pflag"
 )
 
-// lsCmd represents the ls command
 // Used to list various Zube entities, depending on the parent command name
-var lsCmd = &cobra.Command{
+var cardLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List cards with given filters",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -30,33 +29,25 @@ var lsCmd = &cobra.Command{
 		}
 
 		client, _ := zube.NewClientWithProfile(&profile)
-		parentCmd := cmd.Parent().Name()
 
-		switch parentCmd {
-		case "card":
-			query := newQueryFromFlags(cmd.LocalFlags())
-			cards := client.FetchCards(&query)
-			printCards(&cards)
-		case "project":
-			projects := client.FetchProjects()
-			printProjects(&projects)
-		}
+		query := newQueryFromFlags(cmd.LocalFlags())
+		cards := client.FetchCards(&query)
+		printCards(&cards)
 	},
 }
 
 func init() {
-	cardCmd.AddCommand(lsCmd)
-	projectCmd.AddCommand(lsCmd)
+	cardCmd.AddCommand(cardLsCmd)
 
-	lsCmd.Flags().Int("id", 0, "Filter by card internal ID")
-	lsCmd.Flags().String("category", "", "Filter by category name")
-	lsCmd.Flags().Int("epic-id", 0, "Filter by epic ID")
-	lsCmd.Flags().Int("number", 0, "Filter by card number")
-	lsCmd.Flags().Int("priority", -1, "Filter by priority")
-	lsCmd.Flags().Int("project-id", 0, "Filter by project ID")
-	lsCmd.Flags().Int("sprint-id", 0, "Filter by sprint ID")
-	lsCmd.Flags().String("state", "", "Filter by card state")
-	lsCmd.Flags().String("status", "", "Filter by card status")
+	cardLsCmd.Flags().Int("id", 0, "Filter by card internal ID")
+	cardLsCmd.Flags().String("category", "", "Filter by category name")
+	cardLsCmd.Flags().Int("epic-id", 0, "Filter by epic ID")
+	cardLsCmd.Flags().Int("number", 0, "Filter by card number")
+	cardLsCmd.Flags().Int("priority", -1, "Filter by priority")
+	cardLsCmd.Flags().Int("project-id", 0, "Filter by project ID")
+	cardLsCmd.Flags().Int("sprint-id", 0, "Filter by sprint ID")
+	cardLsCmd.Flags().String("state", "", "Filter by card state")
+	cardLsCmd.Flags().String("status", "", "Filter by card status")
 }
 
 func printCards(cards *[]models.Card) {
@@ -73,19 +64,6 @@ func printCards(cards *[]models.Card) {
 			utils.TruncateString(card.Title, 40)+"...",
 			utils.SnakeCaseToTitleCase(card.Status),
 		)
-	}
-}
-
-func printProjects(projects *[]models.Project) {
-	tab := tabular.New()
-
-	tab.Col("id", "ID", 4)
-	tab.Col("name", "Name", 10)
-	tab.Col("description", "Description", 20)
-
-	format := tab.Print("id", "name", "description")
-	for _, project := range *projects {
-		fmt.Printf(format, BrightMagenta(project.Id), project.Name, project.Description)
 	}
 }
 
