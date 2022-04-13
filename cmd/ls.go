@@ -18,6 +18,7 @@ import (
 )
 
 // lsCmd represents the ls command
+// Used to list various Zube entities, depending on the parent command name
 var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List cards with given filters",
@@ -29,17 +30,23 @@ var lsCmd = &cobra.Command{
 		}
 
 		client, _ := zube.NewClientWithProfile(&profile)
+		parentCmd := cmd.Parent().Name()
 
-		if parentCmd := cmd.Parent().Name(); parentCmd == "card" {
+		switch parentCmd {
+		case "card":
 			query := newQueryFromFlags(cmd.LocalFlags())
 			cards := client.FetchCards(&query)
 			printCards(&cards)
+		case "project":
+			projects := client.FetchProjects()
+			printProjects(&projects)
 		}
 	},
 }
 
 func init() {
 	cardCmd.AddCommand(lsCmd)
+	projectCmd.AddCommand(lsCmd)
 
 	lsCmd.Flags().Int("id", 0, "Filter by card internal ID")
 	lsCmd.Flags().String("category", "", "Filter by category name")
@@ -66,6 +73,19 @@ func printCards(cards *[]models.Card) {
 			utils.TruncateString(card.Title, 40)+"...",
 			utils.SnakeCaseToTitleCase(card.Status),
 		)
+	}
+}
+
+func printProjects(projects *[]models.Project) {
+	tab := tabular.New()
+
+	tab.Col("id", "ID", 4)
+	tab.Col("name", "Name", 10)
+	tab.Col("description", "Description", 20)
+
+	format := tab.Print("id", "name", "description")
+	for _, project := range *projects {
+		fmt.Printf(format, BrightMagenta(project.Id), project.Name, project.Description)
 	}
 }
 

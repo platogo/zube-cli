@@ -159,6 +159,8 @@ func (client *Client) FetchCards(query *Query) []models.Card {
 	return response.Data
 }
 
+func (client *Client) CreateCard() {}
+
 // Fetch and return an array of `Account`s
 func (client *Client) FetchAccounts() []models.Account {
 	var response models.PaginatedResponse[models.Account]
@@ -169,6 +171,21 @@ func (client *Client) FetchAccounts() []models.Account {
 
 	if err != nil {
 		log.Fatal("Failed to fetch list of accounts")
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
+func (client *Client) FetchProjects() []models.Project {
+	var response models.PaginatedResponse[models.Project]
+
+	url := zubeURL("/api/projects", Query{})
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatal("Failed to fetch list of projects")
 	}
 
 	json.Unmarshal(body, &response)

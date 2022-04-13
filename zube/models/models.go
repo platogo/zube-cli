@@ -9,11 +9,15 @@ type Pagination struct {
 	Total      int `json:"total"`
 }
 
-type Data[T any] struct {
+type Resource interface {
+	Account | Card | Project | Label | Epic | Source | Workspace
+}
+
+type Data[T Resource] struct {
 	Data []T
 }
 
-type PaginatedResponse[T any] struct {
+type PaginatedResponse[T Resource] struct {
 	Pagination
 	Data []T
 }
@@ -38,19 +42,23 @@ type Assignee struct {
 	Person
 }
 
+type Timestamps struct {
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+}
+
 type Account struct {
-	Id                int
-	DisplayName       string `json:"display_name"`
-	Status            string
-	CreatedAt         string `json:"created_at"`
-	UpdatedAt         string `json:"updated_at"`
-	PrivateUsersCount int    `json:"private_users_count"`
-	FirstBillableAt   string `json:"first_billable_at"`
-	Slug              string
-	HasGithubBilling  string `json:"has_github_billing"`
-	Discount          int
-	HasAnnualBilling  bool `json:"has_annual_billing"`
-	Seats             int
+	Id          int
+	DisplayName string `json:"display_name"`
+	Status      string `json:"status"`
+	Timestamps
+	PrivateUsersCount int     `json:"private_users_count"`
+	FirstBillableAt   string  `json:"first_billable_at"`
+	Slug              string  `json:"slug"`
+	HasGithubBilling  string  `json:"has_github_billing"`
+	Discount          int     `json:"discount"`
+	HasAnnualBilling  bool    `json:"has_annual_billing"`
+	Seats             int     `json:"seats"`
 	AnnualAmount      float64 `json:"annual_amount"`
 }
 
@@ -61,6 +69,48 @@ type Epic struct {
 	Status      string `json:"status"`
 	Color       string `json:"color"`
 	Title       string `json:"title"`
+}
+
+type Workspace struct {
+	Id             int    `json:"id"`
+	ProjectId      int    `json:"project_id"`
+	Description    string `json:"description"`
+	Name           string `json:"name"`
+	Slug           string `json:"slug"`
+	Private        bool   `json:"private"`
+	PriorityFormat int    `json:"priority_format"`
+	Priority       bool   `json:"priority"`
+	Points         bool   `json:"points"`
+	Upvotes        bool   `json:"upvotes"`
+	Timestamps
+	ArchiveMergedPrs        bool   `json:"archive_merged_prs"`
+	UseCategoryLabels       bool   `json:"use_category_labels"`
+	AutoArchiveClosedCards  bool   `json:"auto_archive_closed_cards"`
+	ShouldUseFibonacciScale bool   `json:"should_use_fibonacci_scale"`
+	Timezone                string `json:"timezone"`
+	ShouldDisplayPrs        bool   `json:"should_display_prs"`
+	DefaultCardTemplateId   int    `json:"default_card_template_id"`
+}
+
+type Project struct {
+	Id          int    `json:"id"`
+	AccountId   int    `json:"account_id"`
+	Description string `json:"description"`
+	Name        string `json:"name"`
+	Timestamps
+	Slug                    string `json:"slug"`
+	Private                 bool   `json:"private"`
+	PriorityFormat          string `json:"priority_format"`
+	Priority                bool   `json:"priority"`
+	Points                  bool   `json:"points"`
+	Triage                  bool   `json:"triage"`
+	Upvotes                 bool   `json:"upvotes"`
+	AutoAddGithubUsers      bool   `json:"auto_add_github_users"`
+	Color                   string `json:"color"`
+	ShouldUseFibonacciScale bool   `json:"should_use_fibonacci_scale"`
+	DefaultEpicListId       int    `json:"default_epic_list_id"`
+	Sources                 []Source
+	Workspaces              []Workspace
 }
 
 type Label struct {
@@ -97,30 +147,45 @@ type GithubIssue struct {
 }
 
 type Card struct {
-	Id            int        `json:"id"`
-	CreatorId     int        `json:"creator_id"`
-	ProjectId     int        `json:"project_id"`
-	SprintId      int        `json:"sprint_id"`
-	WorkspaceId   int        `json:"workspace_id"`
-	Body          string     `json:"body"`
-	CategoryName  string     `json:"category_name"`
-	ClosedAt      string     `json:"closed_at"`
-	CommentsCount int        `json:"comments_count"`
-	LastCommentAt string     `json:"last_comment_at"`
-	Number        int        `json:"number"`
-	Points        int        `json:"points"`
-	Priority      int        `json:"priority"`
-	SearchKey     string     `json:"search_key"`
-	State         string     `json:"state"`
-	Status        string     `json:"status"`
-	Title         string     `json:"title"`
-	UpvotesCount  int        `json:"upvotes_count"`
-	CreatedAt     string     `json:"created_at"`
-	UpdatedAt     string     `json:"updated_at"`
-	EpicId        int        `json:"epic_id"`
-	CloserId      int        `json:"closer_id"`
-	Assignees     []Assignee `json:"assignees"`
-	Creator       []Person   `json:"creator"`
-	Epic          Epic       `json:"epic"`
-	Labels        []Label    `json:"labels"`
+	Id            int    `json:"id"`
+	CreatorId     int    `json:"creator_id"`
+	ProjectId     int    `json:"project_id"`
+	SprintId      int    `json:"sprint_id"`
+	WorkspaceId   int    `json:"workspace_id"`
+	Body          string `json:"body"`
+	CategoryName  string `json:"category_name"`
+	ClosedAt      string `json:"closed_at"`
+	CommentsCount int    `json:"comments_count"`
+	LastCommentAt string `json:"last_comment_at"`
+	Number        int    `json:"number"`
+	Points        int    `json:"points"`
+	Priority      int    `json:"priority"`
+	SearchKey     string `json:"search_key"`
+	State         string `json:"state"`
+	Status        string `json:"status"`
+	Title         string `json:"title"`
+	UpvotesCount  int    `json:"upvotes_count"`
+	Timestamps
+	EpicId    int        `json:"epic_id"`
+	CloserId  int        `json:"closer_id"`
+	Assignees []Assignee `json:"assignees"`
+	Creator   []Person   `json:"creator"`
+	Epic      Epic       `json:"epic"`
+	Labels    []Label    `json:"labels"`
+}
+
+// Represents the parameters to be sent to Zube on card creation
+// Only the `title` and `project_id` are required
+type NewCardParameters struct {
+	AssigneeIds  []int  `json:"assignee_ids"`
+	Body         string `json:"body"`
+	CategoryName string `json:"category_name"`
+	EpicId       int    `json:"epic_id"`
+	LabelIds     []int  `json:"label_ids"`
+	Points       int    `json:"points"`
+	Priority     int    `json:"priority"`   // must be one of 1, 2, 3, 4, 5, or null
+	ProjectId    int    `json:"project_id"` // required
+	SprintId     int    `json:"sprint_id"`
+	Title        string `json:"title"` // required
+	WorkspaceId  int    `json:"workspace_id"`
 }
