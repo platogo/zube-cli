@@ -42,7 +42,7 @@ var currentPersonCmd = &cobra.Command{
 
 		// Call public client API to fetch resource that is needed, then print formatted output
 		person := client.FetchCurrentPerson()
-		fmt.Printf("Username: %s\nName: %s\n", person.Username, person.Name)
+		fmt.Printf("Username: %s\nName: %s\nId: %d\n", person.Username, person.Name, person.Id)
 	},
 }
 
