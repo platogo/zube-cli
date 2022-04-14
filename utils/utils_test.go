@@ -13,6 +13,7 @@ func TestTruncateString(t *testing.T) {
 	}{
 		{"platogos", 3, "pla"},
 		{"slotpark", 10, "slotpark"},
+		{"早く", 1, "早"},
 	}
 
 	for _, tt := range tests {
