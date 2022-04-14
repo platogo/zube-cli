@@ -1,10 +1,13 @@
 package utils
 
-import "strings"
+import (
+	"strings"
+	"unicode/utf8"
+)
 
 // Returns a string truncated to the given `maxLen`
 func TruncateString(s string, maxLen int) string {
-	if len(s) > maxLen {
+	if utf8.RuneCountInString(s) > maxLen {
 		return s[:maxLen]
 	}
 	return s

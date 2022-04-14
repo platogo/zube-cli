@@ -7,6 +7,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"unicode/utf8"
 
 	"github.com/InVisionApp/tabular"
 	. "github.com/logrusorgru/aurora"
@@ -46,6 +47,7 @@ func init() {
 	cardLsCmd.Flags().Int("priority", -1, "Filter by priority")
 	cardLsCmd.Flags().Int("project-id", 0, "Filter by project ID")
 	cardLsCmd.Flags().Int("sprint-id", 0, "Filter by sprint ID")
+	cardLsCmd.Flags().Int("workspace-id", 0, "Filter by workspace ID")
 	cardLsCmd.Flags().String("state", "", "Filter by card state")
 	cardLsCmd.Flags().String("status", "", "Filter by card status")
 }
@@ -58,10 +60,20 @@ func printCards(cards *[]models.Card) {
 	tab.Col("status", "Status", 10)
 
 	format := tab.Print("no", "title", "status")
+
+	const maxTitleLen = 40
+
 	for _, card := range *cards {
+
+		fmtTitle := utils.TruncateString(card.Title, maxTitleLen)
+
+		if utf8.RuneCountInString(card.Title) > maxTitleLen {
+			fmtTitle += "..."
+		}
+
 		fmt.Printf(format,
 			BrightGreen(card.Number),
-			utils.TruncateString(card.Title, 40)+"...",
+			fmtTitle,
 			utils.SnakeCaseToTitleCase(card.Status),
 		)
 	}
@@ -98,6 +110,10 @@ func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {
 
 	if sprintId, ok := flags.GetInt("sprint-id"); ok == nil && sprintId != 0 {
 		where["sprint_id"] = sprintId
+	}
+
+	if workspaceId, ok := flags.GetInt("workspace-id"); ok == nil && workspaceId != 0 {
+		where["workspace_id"] = workspaceId
 	}
 
 	state, ok := flags.GetString("state")
