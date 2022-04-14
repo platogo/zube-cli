@@ -30,7 +30,7 @@ var ClientId string
 var loginCmd = &cobra.Command{
 	Use:   "login",
 	Short: "Login to Zube with your client ID and private key.",
-	Long:  `A command for debugging the login flow to Zube.`,
+	Long:  `A command for debugging the login flow to Zube. On success, it will print your access token.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := zube.NewClient(ClientId)
 

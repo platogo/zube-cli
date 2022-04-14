@@ -29,6 +29,7 @@ import (
 	"github.com/platogo/zube-cli/zube/models"
 )
 
+// TODO: Rename to cardViewCmd
 // viewCmd represents the view command
 var viewCmd = &cobra.Command{
 	Use:   "view",

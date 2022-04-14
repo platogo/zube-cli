@@ -1,5 +1,7 @@
 # About
 
+[![Go](https://github.com/platogo/zube-cli/actions/workflows/go.yml/badge.svg)](https://github.com/platogo/zube-cli/actions/workflows/go.yml)
+
 `zube-cli` is a small Command Line Utility written in [go](https://go.dev) for interacting with [Zube](https://zube.io)
 
 ## Setup
