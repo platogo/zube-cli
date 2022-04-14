@@ -161,6 +161,20 @@ func (client *Client) FetchCards(query *Query) []models.Card {
 
 func (client *Client) CreateCard() {}
 
+func (client *Client) FetchWorkspaces() []models.Workspace {
+	var response models.PaginatedResponse[models.Workspace]
+
+	url := zubeURL("/api/workspaces", Query{})
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatal("Failed to fetch list of workspaces")
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 // Fetch and return an array of `Account`s
 func (client *Client) FetchAccounts() []models.Account {
 	var response models.PaginatedResponse[models.Account]
