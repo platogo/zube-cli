@@ -32,7 +32,17 @@ var cardLsCmd = &cobra.Command{
 		client, _ := zube.NewClientWithProfile(&profile)
 
 		query := newQueryFromFlags(cmd.LocalFlags())
-		cards := client.FetchCards(&query)
+
+		var cards []models.Card
+
+		if projectId, err := cmd.Flags().GetInt("project-id"); err == nil && projectId != 0 {
+			query.Direction = "desc"
+			query.Order.By = "milestone"
+			cards = client.FetchProjectCards(projectId, &query)
+		} else {
+			cards = client.FetchCards(&query)
+		}
+
 		printCards(&cards)
 	},
 }
@@ -48,6 +58,7 @@ func init() {
 	cardLsCmd.Flags().Int("project-id", 0, "Filter by project ID")
 	cardLsCmd.Flags().Int("sprint-id", 0, "Filter by sprint ID")
 	cardLsCmd.Flags().Int("workspace-id", 0, "Filter by workspace ID")
+	cardLsCmd.Flags().Int("assignee-id", 0, "Filter by assignee")
 	cardLsCmd.Flags().String("state", "", "Filter by card state")
 	cardLsCmd.Flags().String("status", "", "Filter by card status")
 }
@@ -80,6 +91,7 @@ func printCards(cards *[]models.Card) {
 }
 
 func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {
+	var query zube.Query
 	where := make(map[string]any)
 
 	id, ok := flags.GetInt("id")
@@ -116,6 +128,10 @@ func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {
 		where["workspace_id"] = workspaceId
 	}
 
+	if assigneeId, ok := flags.GetInt("assignee-id"); ok == nil && assigneeId != 0 {
+		where["assignee_ids"] = []int{assigneeId}
+	}
+
 	state, ok := flags.GetString("state")
 	if ok == nil && state != "" {
 		where["state"] = state
@@ -126,7 +142,7 @@ func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {
 		where["status"] = status
 	}
 	selectedCols := [4]string{"number", "title", "status", "category_name"}
-	filter := zube.Filter{Where: where, Select: selectedCols[:]}
+	query.Filter = zube.Filter{Where: where, Select: selectedCols[:]}
 
-	return zube.Query{Filter: filter}
+	return query
 }

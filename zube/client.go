@@ -221,6 +221,22 @@ func (client *Client) FetchProjects() []models.Project {
 	return response.Data
 }
 
+// Fetch cards for a specific project. The `project_id` key in the `Where` part of the `Query`'s `Filter` will have no effect.
+func (client *Client) FetchProjectCards(projectId int, query *Query) []models.Card {
+	var response models.PaginatedResponse[models.Card]
+
+	url := zubeURL(fmt.Sprintf("/api/projects/%d/cards", projectId), *query)
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatalf("Failed to fetch cards for project with Id: %d", projectId)
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 // Wrapper around `performAPIRequestURL` for e.g. GET requests with no request body
 func (client *Client) performAPIRequestURLNoBody(method string, url *url.URL) ([]byte, error) {
 	return client.performAPIRequestURL(method, url, nil)
