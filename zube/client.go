@@ -159,6 +159,21 @@ func (client *Client) FetchCards(query *Query) []models.Card {
 	return response.Data
 }
 
+func (client *Client) FetchCardComments(cardId int) []models.Comment {
+	var response models.PaginatedResponse[models.Comment]
+
+	url := zubeURL("/api/cards/"+fmt.Sprint(cardId)+"/comments", Query{})
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatalf("Failed to fetch comments for card with Id: %d", cardId)
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 func (client *Client) CreateCard() {}
 
 func (client *Client) FetchWorkspaces() []models.Workspace {

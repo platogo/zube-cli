@@ -53,7 +53,10 @@ var viewCmd = &cobra.Command{
 			cardQueryByNumber := zube.Query{Filter: zube.Filter{Where: map[string]any{"number": cardNumber}}}
 			cards := client.FetchCards(&cardQueryByNumber)
 			if len(cards) == 1 {
-				printCard(&cards[0])
+				card := cards[0]
+				comments := client.FetchCardComments(card.Id)
+				printCard(&card)
+				printComments(&comments)
 			} else {
 				fmt.Println("Card not found!")
 			}
@@ -72,9 +75,26 @@ func printCard(card *models.Card) {
 		labels = append(labels, label.Name)
 	}
 
-	fmt.Printf("%s\n%s\n%s\n\n%s",
-		Reverse(card.Title+" #"+fmt.Sprint(card.Number)).Bold(),
-		Underline(utils.SnakeCaseToTitleCase(card.Status)),
+	format := "%s\n%s\n%s\nPriority: P%d\n\n%s"
+	titleFormat := Reverse(card.Title + " #" + fmt.Sprint(card.Number)).Bold()
+	statusFormat := Underline(utils.SnakeCaseToTitleCase(card.Status))
+	bodyFormat := Gray(22, card.Body)
+
+	fmt.Printf(format,
+		titleFormat,
+		statusFormat,
 		Bold("Labels: "+strings.Join(labels, " ")),
-		Gray(12, card.Body))
+		card.Priority,
+		bodyFormat)
+}
+
+func printComments(comments *[]models.Comment) {
+
+	fmt.Printf("\n\n%s\n\n", Bold("Comments"))
+
+	for _, comment := range *comments {
+		fmt.Printf("%s\n%s\n\n", Reverse(comment.Creator.Name), Gray(14, comment.Timestamps.CreatedAt))
+
+		fmt.Println(comment.Body)
+	}
 }

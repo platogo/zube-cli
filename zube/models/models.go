@@ -10,7 +10,7 @@ type Pagination struct {
 }
 
 type Resource interface {
-	Account | Card | Project | Label | Epic | Source | Workspace
+	Account | Card | Comment | Project | Label | Epic | Source | Workspace
 }
 
 type Data[T Resource] struct {
@@ -172,6 +172,15 @@ type Card struct {
 	Creator   []Person   `json:"creator"`
 	Epic      Epic       `json:"epic"`
 	Labels    []Label    `json:"labels"`
+}
+
+type Comment struct {
+	Id        int    `json:"id"`
+	CardId    int    `json:"card_id"`
+	CreatorId int    `json:"creator_id"`
+	Body      string `json:"body"`
+	Timestamps
+	Creator Person
 }
 
 // Represents the parameters to be sent to Zube on card creation
