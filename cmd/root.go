@@ -10,11 +10,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const Version = "0.1.0"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "zube-cli",
-	Short: "A Command Line utility for interacting with Zube.io",
-	Long:  `Zube-CLI is a CLI tool built in Go that allows you to manage Zube cards, projects and other resources from the terminal.`,
+	Use:     "zube-cli",
+	Short:   "A Command Line utility for interacting with Zube.io",
+	Long:    `Zube-CLI is a CLI tool built in Go that allows you to manage Zube cards, projects and other resources from the terminal.`,
+	Version: Version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
