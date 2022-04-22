@@ -58,7 +58,7 @@ func init() {
 	cardLsCmd.Flags().Int("project-id", 0, "Filter by project ID")
 	cardLsCmd.Flags().Int("sprint-id", 0, "Filter by sprint ID")
 	cardLsCmd.Flags().Int("workspace-id", 0, "Filter by workspace ID")
-	cardLsCmd.Flags().Int("assignee-id", 0, "Filter by assignee")
+	cardLsCmd.Flags().String("assignee-id", "", "Filter by assignee")
 	cardLsCmd.Flags().String("state", "", "Filter by card state")
 	cardLsCmd.Flags().String("status", "", "Filter by card status")
 }
@@ -128,8 +128,8 @@ func newQueryFromFlags(flags *pflag.FlagSet) zube.Query {
 		where["workspace_id"] = workspaceId
 	}
 
-	if assigneeId, ok := flags.GetInt("assignee-id"); ok == nil && assigneeId != 0 {
-		where["assignee_ids"] = []int{assigneeId}
+	if assigneeId, ok := flags.GetString("assignee-id"); ok == nil && assigneeId != "" {
+		where["assignee_ids"] = []string{assigneeId}
 	}
 
 	state, ok := flags.GetString("state")

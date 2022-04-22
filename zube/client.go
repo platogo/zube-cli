@@ -10,16 +10,16 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/platogo/zube-cli/zube/models"
 )
 
 const (
-	ZubeHost string = "zube.io"
-	ApiUrl   string = "https://zube.io/api/"
+	ZubeHost  string = "zube.io"
+	ApiUrl    string = "https://zube.io/api/"
+	UserAgent string = "Zube-CLI"
 )
-
-var UserAgent = "Zube-CLI"
 
 // Request parameter struct definitions
 
@@ -55,9 +55,15 @@ func (query *Query) Encode() string {
 	// Order
 	q.Add("order[by]", query.Order.By)
 	q.Add("order[direction]", query.Order.Direction)
+
 	// Filter
-	for field, val := range query.Filter.Where {
-		q.Add(fmt.Sprintf("where[%s]", field), fmt.Sprint(val))
+	for field, v := range query.Filter.Where {
+		switch value := v.(type) {
+		case []string:
+			q.Add(fmt.Sprintf("where[%s][]", field), strings.Join(value, ","))
+		default:
+			q.Add(fmt.Sprintf("where[%s]", field), fmt.Sprint(v))
+		}
 	}
 
 	for _, col := range query.Filter.Select {
