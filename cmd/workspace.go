@@ -25,7 +25,7 @@ import (
 // workspaceCmd represents the workspace command
 var workspaceCmd = &cobra.Command{
 	Use:   "workspace",
-	Short: "A brief description of your command",
+	Short: "Manage workspaces",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("workspace called")
 	},
