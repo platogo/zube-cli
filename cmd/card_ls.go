@@ -15,7 +15,6 @@ import (
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 )
 
 // Used to list various Zube entities, depending on the parent command name
@@ -23,9 +22,7 @@ var cardLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List cards with given filters",
 	Run: func(cmd *cobra.Command, args []string) {
-		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
-
-		client, _ := zube.NewClientWithProfile(&profile)
+		client, _ := zube.NewClient()
 
 		query := newQueryFromFlags(cmd.LocalFlags())
 

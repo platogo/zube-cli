@@ -2,6 +2,7 @@ package zube
 
 import (
 	"crypto/rsa"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/platogo/zube-cli/zube/models"
 )
 
 const PrivateKeyFileName = "zube_api_key.pem"
@@ -47,4 +49,45 @@ func GenerateRefreshJWT(clientId string, key *rsa.PrivateKey) (string, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	return token.SignedString(key)
+}
+
+// Returns true if the token is present and not expired
+func IsTokenValid(token models.ZubeAccessToken) bool {
+	if token.AccessToken != "" {
+		isExp, _ := isAccessTokenExpired(token.AccessToken)
+		return !isExp
+	}
+
+	return false
+}
+
+// Returns true if the JWT is expired
+func isAccessTokenExpired(accessToken string) (bool, error) {
+	token, _, err := new(jwt.Parser).ParseUnverified(accessToken, jwt.MapClaims{})
+
+	if err != nil {
+		log.Fatal(err)
+		return true, err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+
+	if !ok {
+		log.Fatalf("Can't convert token's claims to standard claims")
+	}
+
+	var expTime time.Time
+	now := time.Now()
+
+	switch exp := claims["exp"].(type) {
+	case float64:
+		expTime = time.Unix(int64(exp), 0)
+	case json.Number:
+		v, _ := exp.Int64()
+		expTime = time.Unix(v, 0)
+	}
+
+	isExpired := expTime.Unix() < now.Unix()
+
+	return isExpired, nil
 }

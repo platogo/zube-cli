@@ -24,7 +24,6 @@ import (
 	"github.com/platogo/zube-cli/zube"
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // projectLsCmd represents the projectLs command
@@ -33,9 +32,7 @@ var projectLsCmd = &cobra.Command{
 	Short: "List all Zube projects",
 	Long:  `You can use this command to list all projects accessible to your user.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
-
-		client, _ := zube.NewClientWithProfile(&profile)
+		client, _ := zube.NewClient()
 
 		projects := client.FetchProjects()
 		printProjects(&projects)

@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/platogo/zube-cli/zube/models"
+	"github.com/spf13/viper"
 )
 
 const (
@@ -78,44 +79,39 @@ type Client struct {
 	ClientId               string // Your unique client ID
 }
 
-// Sets up a client with a profile, and caches it if needed
-func NewClientWithProfile(profile *Profile) (*Client, error) {
-	client := NewClient(profile.ClientId)
-
-	if profile.IsTokenValid() {
-		client.AccessToken = profile.AccessToken
-	} else {
-		// Refresh client token and dump it to profile
-		privateKey, err := GetPrivateKey()
-		if err != nil {
-			log.Fatalln(err)
-			return client, err
-		}
-
-		profile.AccessToken, err = client.RefreshAccessToken(privateKey)
-
-		if err != nil {
-			log.Fatalln(err)
-			return client, err
-		}
-
-		ok := profile.SaveToConfig()
-
-		if ok != nil {
-			log.Fatal("Failed to save current configuration:", ok)
-		}
+// Creates and returns a Zube Client with an access token
+// If the current access token is invalid, it is refreshes and saved to config
+func NewClient() (*Client, error) {
+	client := &Client{
+		ClientId:        viper.GetString("client_id"),
+		ZubeAccessToken: models.ZubeAccessToken{AccessToken: viper.GetString("access_token")},
 	}
+
+	if !IsTokenValid(client.ZubeAccessToken) {
+		privateKey, err := GetPrivateKey()
+
+		if err != nil {
+			log.Fatalln(err)
+			return client, err
+		}
+		access_token, err := client.RefreshAccessToken(privateKey)
+
+		if err != nil {
+			log.Fatalln(err)
+			return client, err
+		}
+
+		viper.Set("access_token", access_token)
+		viper.WriteConfig()
+		client.ZubeAccessToken.AccessToken = access_token
+	}
+
 	return client, nil
 }
 
 // Constructs a new client with only host and Client ID configured, enough to make an access token request.
-func NewClient(clientId string) *Client {
+func NewClientWithId(clientId string) *Client {
 	return &Client{Host: ZubeHost, ClientId: clientId}
-}
-
-// Like `NewClient`, but requires and access token ready to be used for API requests.
-func NewClientWithAccessToken(clientId, accessToken string) *Client {
-	return &Client{Host: ZubeHost, ClientId: clientId, ZubeAccessToken: models.ZubeAccessToken{AccessToken: accessToken}}
 }
 
 // Fetch the access token JWT from Zube API and set it for the client. If it already exists, refresh it.

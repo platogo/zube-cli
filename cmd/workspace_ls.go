@@ -24,7 +24,6 @@ import (
 	"github.com/platogo/zube-cli/zube"
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // workspaceLsCmd represents the workspace ls command
@@ -32,9 +31,7 @@ var workspaceLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List workspaces",
 	Run: func(cmd *cobra.Command, args []string) {
-		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
-
-		client, _ := zube.NewClientWithProfile(&profile)
+		client, _ := zube.NewClient()
 		workspaces := client.FetchWorkspaces()
 		printWorkspaces(&workspaces)
 	},

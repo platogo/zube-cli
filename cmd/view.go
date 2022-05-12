@@ -21,7 +21,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/utils"
@@ -35,15 +34,13 @@ var viewCmd = &cobra.Command{
 	Use:   "view",
 	Short: "Display the title, status, body and other info about a Zube card.",
 	Run: func(cmd *cobra.Command, args []string) {
-		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
-
 		var cardNumber string
 
 		if len(args) > 0 {
 			cardNumber = args[0]
 		}
 
-		client, _ := zube.NewClientWithProfile(&profile)
+		client, _ := zube.NewClient()
 
 		if parentCmd := cmd.Parent().Name(); parentCmd == "card" {
 			cardQueryByNumber := zube.Query{Filter: zube.Filter{Where: map[string]any{"number": cardNumber}}}
