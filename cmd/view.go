@@ -70,27 +70,33 @@ func init() {
 
 func printCard(card *models.Card) {
 	var labels []string
+	var assigneeNames []string
 
 	for _, label := range card.Labels {
 		labels = append(labels, label.Name)
 	}
 
-	format := "%s\n%s\n%s\nPriority: P%d\n\n%s"
+	for _, assignee := range card.Assignees {
+		assigneeNames = append(assigneeNames, assignee.Username)
+	}
+
 	titleFormat := Reverse(card.Title + " #" + fmt.Sprint(card.Number)).Bold()
 	statusFormat := Underline(utils.SnakeCaseToTitleCase(card.Status))
 	bodyFormat := Gray(22, card.Body)
 
-	fmt.Printf(format,
-		titleFormat,
-		statusFormat,
-		Bold("Labels: "+strings.Join(labels, " ")),
-		card.Priority,
-		bodyFormat)
+	fmt.Println(titleFormat)
+	fmt.Println(statusFormat)
+	fmt.Println(Bold("Assignees:"), strings.Join(assigneeNames, " "))
+	fmt.Println(Bold("Labels: "), strings.Join(labels, " "))
+	fmt.Println()
+	fmt.Println(bodyFormat)
+	fmt.Println()
+	fmt.Println(Bold("View this card on Zube: " + "https://zube.io/platogo/platogo/c/" + fmt.Sprint(card.Number)))
 }
 
 func printComments(comments *[]models.Comment) {
 
-	fmt.Printf("\n\n%s\n\n", Bold("Comments"))
+	fmt.Printf("------\n\n%s\n\n", Bold("Comments"))
 
 	for _, comment := range *comments {
 		fmt.Printf("%s\n%s\n\n", Reverse(comment.Creator.Name), Gray(14, comment.Timestamps.CreatedAt))
