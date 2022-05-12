@@ -18,10 +18,10 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/utils"
@@ -35,11 +35,7 @@ var viewCmd = &cobra.Command{
 	Use:   "view",
 	Short: "Display the title, status, body and other info about a Zube card.",
 	Run: func(cmd *cobra.Command, args []string) {
-		profile, err := zube.ParseDefaultConfig()
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
 
 		var cardNumber string
 

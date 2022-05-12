@@ -18,10 +18,10 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/platogo/zube-cli/zube"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // currentPersonCmd represents the currentPerson command
@@ -30,12 +30,8 @@ var currentPersonCmd = &cobra.Command{
 	Use:   "currentPerson",
 	Short: "Show info about your own user",
 	Run: func(cmd *cobra.Command, args []string) {
-		// Load any existing cached config
-		profile, err := zube.ParseDefaultConfig()
-		if err != nil {
-			log.Fatalln(err)
-			return
-		}
+		// Create a profile using Viper config
+		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
 
 		// Prepare a client using the loaded profile
 		client, _ := zube.NewClientWithProfile(&profile)

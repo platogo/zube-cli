@@ -2,7 +2,6 @@ package zube
 
 import (
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"log"
 	"os"
@@ -25,16 +24,6 @@ func ConfigDir() string {
 
 func ConfigFile() string {
 	return filepath.Join(ConfigDir(), "config.yml")
-}
-
-func IsConfigFilePresent() bool {
-	_, err := os.Stat(ConfigFile())
-	return !errors.Is(err, os.ErrNotExist)
-}
-
-// Parses a locally saved profile and returns it
-func ParseDefaultConfig() (Profile, error) {
-	return parseConfigFile(ConfigFile())
 }
 
 func (profile *Profile) SaveToConfig() error {
@@ -86,6 +75,7 @@ func (profile *Profile) IsAccessTokenExpired() (bool, error) {
 	return isExpired, nil
 }
 
+// Checks if the profile's access token is present and not expired
 func (profile *Profile) IsTokenValid() bool {
 	if profile.AccessToken != "" {
 		isExp, _ := profile.IsAccessTokenExpired()
@@ -93,34 +83,4 @@ func (profile *Profile) IsTokenValid() bool {
 	}
 
 	return false
-}
-
-func parseConfigFile(filename string) (Profile, error) {
-	if !IsConfigFilePresent() {
-		log.Fatalln("Config file does not exist!")
-	}
-
-	f, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	defer f.Close()
-
-	data, err := ioutil.ReadAll(f)
-
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	var profile Profile
-
-	err = yaml.Unmarshal(data, &profile)
-
-	if err != nil {
-		log.Fatal(err)
-		return profile, err
-	}
-
-	return profile, nil
 }

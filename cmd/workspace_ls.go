@@ -18,13 +18,13 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/InVisionApp/tabular"
 	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/zube"
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // workspaceLsCmd represents the workspace ls command
@@ -32,11 +32,7 @@ var workspaceLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List workspaces",
 	Run: func(cmd *cobra.Command, args []string) {
-		profile, err := zube.ParseDefaultConfig()
-		if err != nil {
-			log.Fatalln(err)
-			return
-		}
+		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
 
 		client, _ := zube.NewClientWithProfile(&profile)
 		workspaces := client.FetchWorkspaces()

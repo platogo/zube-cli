@@ -6,7 +6,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"unicode/utf8"
 
 	"github.com/InVisionApp/tabular"
@@ -16,6 +15,7 @@ import (
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 // Used to list various Zube entities, depending on the parent command name
@@ -23,11 +23,7 @@ var cardLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List cards with given filters",
 	Run: func(cmd *cobra.Command, args []string) {
-		profile, err := zube.ParseDefaultConfig()
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		profile := zube.Profile{ClientId: viper.GetString("client_id"), AccessToken: viper.GetString("access_token")}
 
 		client, _ := zube.NewClientWithProfile(&profile)
 
