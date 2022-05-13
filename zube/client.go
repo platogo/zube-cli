@@ -192,6 +192,21 @@ func (client *Client) FetchWorkspaces() []models.Workspace {
 	return response.Data
 }
 
+// Fetch all epics for a given project
+func (client *Client) FetchEpics(projectId int) []models.Epic {
+	var response models.PaginatedResponse[models.Epic]
+
+	url := zubeURL(fmt.Sprintf("/api/projects/%d/epics", projectId), Query{})
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatalf("Failed to fetch cards for project with Id: %d", projectId)
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 // Fetch and return an array of `Account`s
 func (client *Client) FetchAccounts() []models.Account {
 	var response models.PaginatedResponse[models.Account]

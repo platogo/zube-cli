@@ -7,12 +7,13 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-const Version = "0.1.4"
+const Version = "0.1.5"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -33,9 +34,10 @@ func Execute() {
 
 func init() {
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.zube-cli.yaml)")
+	defaultConfigPath := filepath.Join("$HOME", "config", "zube")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/config/zube")
+	viper.AddConfigPath(defaultConfigPath)
 
 	err := viper.ReadInConfig()
 

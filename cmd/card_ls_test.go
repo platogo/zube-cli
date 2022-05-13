@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/platogo/zube-cli/utils"
 	"github.com/platogo/zube-cli/zube"
 )
 
@@ -15,7 +16,7 @@ func TestNewQueryFromFlags(t *testing.T) {
 	example.Set("status", "open")
 	example.Set("number", "0")
 
-	res := newQueryFromFlags(example)
+	res := utils.NewQueryFromFlags(example)
 
 	want := zube.Query{Filter: zube.Filter{
 		Where:  map[string]any{"category_name": "Inbox", "priority": 3, "status": "open"},
