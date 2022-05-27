@@ -22,7 +22,7 @@ run:
 	go run main.go
 
 test:
-	go test -v ./zube ./utils
+	go test -v ./zube ./utils ./cache
 
 format:
 	@echo "Formatting the entire project"

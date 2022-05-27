@@ -9,11 +9,12 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/platogo/zube-cli/cache"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-const Version = "0.1.5"
+const Version = "0.1.6"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -44,6 +45,8 @@ func init() {
 	if err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
+
+	cache.New()
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

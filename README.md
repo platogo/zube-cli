@@ -4,6 +4,12 @@
 
 `zube-cli` is a small Command Line Utility written in [go](https://go.dev) for interacting with [Zube](https://zube.io)
 
+## Features
+
+- Fetch various Zube resources
+- Construct complex Zube queries
+- Client-side request caching
+
 ## Setup
 
 ### Build & Install

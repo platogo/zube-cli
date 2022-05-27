@@ -2,6 +2,7 @@ package zube
 
 import (
 	"crypto/rsa"
+	"crypto/sha1"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/platogo/zube-cli/cache"
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/viper"
 )
@@ -87,7 +89,7 @@ func NewClient() (*Client, error) {
 	client := &Client{
 		ClientId:        viper.GetString("client_id"),
 		ZubeAccessToken: models.ZubeAccessToken{AccessToken: viper.GetString("access_token")},
-		HTTPc:           http.Client{Timeout: time.Duration(5) * time.Second},
+		HTTPc:           http.Client{Timeout: time.Duration(10) * time.Second},
 	}
 
 	if !IsTokenValid(client.ZubeAccessToken) {
@@ -269,6 +271,15 @@ func (client *Client) performAPIRequestURL(method string, url *url.URL, body io.
 	if client.AccessToken == "" {
 		return nil, errors.New("missing access token")
 	}
+
+	urlsha1 := sha1.Sum([]byte(url.String()))
+	cacheKey := fmt.Sprintf("%x", urlsha1)
+	cached, found := cache.Get(cacheKey)
+
+	if found {
+		req.Header.Add("If-None-Match", cached.Etag)
+	}
+
 	req.Header.Add("Authorization", "Bearer "+client.AccessToken)
 	req.Header.Add("X-Client-ID", client.ClientId)
 	req.Header.Add("User-Agent", UserAgent)
@@ -278,8 +289,17 @@ func (client *Client) performAPIRequestURL(method string, url *url.URL, body io.
 
 	resp, _ := client.HTTPc.Do(req)
 
+	// If cache exists and has not been changed on server, return cache data
+	if found && resp.StatusCode == http.StatusNotModified {
+		return json.Marshal(cached.Data)
+	}
+
 	respBody, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
+
+	if etag := resp.Header.Get("ETag"); etag != "" {
+		cache.Save(cacheKey, etag, respBody)
+	}
 
 	return respBody, err
 }
