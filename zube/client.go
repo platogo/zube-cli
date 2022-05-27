@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/viper"
@@ -77,6 +78,7 @@ type Client struct {
 	models.ZubeAccessToken // An encoded access JWT valid for 24h to the Zube API
 	Host                   string
 	ClientId               string // Your unique client ID
+	HTTPc                  http.Client
 }
 
 // Creates and returns a Zube Client with an access token
@@ -85,6 +87,7 @@ func NewClient() (*Client, error) {
 	client := &Client{
 		ClientId:        viper.GetString("client_id"),
 		ZubeAccessToken: models.ZubeAccessToken{AccessToken: viper.GetString("access_token")},
+		HTTPc:           http.Client{Timeout: time.Duration(5) * time.Second},
 	}
 
 	if !IsTokenValid(client.ZubeAccessToken) {
@@ -273,7 +276,7 @@ func (client *Client) performAPIRequestURL(method string, url *url.URL, body io.
 		req.Header.Add("Accept", "application/json")
 	}
 
-	resp, _ := http.DefaultClient.Do(req)
+	resp, _ := client.HTTPc.Do(req)
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
