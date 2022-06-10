@@ -56,15 +56,15 @@ func init() {
 }
 
 func printCards(cards *[]models.Card) {
+	const maxTitleLen = 60
+
 	tab := tabular.New()
 
 	tab.Col("no", "Number", 6)
-	tab.Col("title", "Title", 46)
+	tab.Col("title", "Title", maxTitleLen+6)
 	tab.Col("status", "Status", 10)
 
 	format := tab.Print("no", "title", "status")
-
-	const maxTitleLen = 40
 
 	for _, card := range *cards {
 
