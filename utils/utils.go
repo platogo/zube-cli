@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"bufio"
+	"fmt"
+	"os"
 	"strings"
 
 	"github.com/platogo/zube-cli/zube"
@@ -87,4 +90,18 @@ func NewQueryFromFlags(flags *pflag.FlagSet) zube.Query {
 	query.Filter = zube.Filter{Where: where, Select: selectedCols[:]}
 
 	return query
+}
+
+// StringPrompt asks for a string value using the label
+func StringPrompt(label string) string {
+	var s string
+	r := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Fprint(os.Stderr, label+" ")
+		s, _ = r.ReadString('\n')
+		if s != "" {
+			break
+		}
+	}
+	return strings.TrimSpace(s)
 }
