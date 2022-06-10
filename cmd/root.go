@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-const Version = "0.1.6"
+const Version = "0.1.7"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
