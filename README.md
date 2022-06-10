@@ -2,7 +2,7 @@
 
 [![Go](https://github.com/platogo/zube-cli/actions/workflows/go.yml/badge.svg)](https://github.com/platogo/zube-cli/actions/workflows/go.yml)
 
-`zube-cli` is a small Command Line Utility written in [go](https://go.dev) for interacting with [Zube](https://zube.io)
+`zube-cli` is a small Command Line Utility written in [go](https://go.dev) for interacting with the [Zube](https://zube.io) issue tracking system.
 
 ## Features
 
@@ -58,3 +58,19 @@ Number Title                                          Status
 13260  Use matrix in github build actions...          done
 13252  Fix export timestamp...                        done
 ```
+
+## Contributing
+
+Read [CONTRIBUTING](CONTRIBUTING.md)
+
+## Roadmap
+
+- [ ] Card interactive creation
+- [ ] Card editing & state transition
+- [ ] Card queries / search by text
+- [ ] Homebrew formula
+- [ ] **Zube Query Launguage (ZQL)** parser as alternative for command line flag filters
+- [ ] Filter support by name instead of just by IDs
+- [ ] Optionally dump response data as JSON
+- [ ] `zubed` daemon for periodic update polling
+- [ ] Move `zube` functionality into dedicated `zube-go` library
