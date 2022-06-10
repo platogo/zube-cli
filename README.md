@@ -31,6 +31,13 @@ Example of a `config.yml`:
 client_id: some-super-long-client-id
 ```
 
+Easiest way to set your `client_id` is by calling
+
+```bash
+touch ~/config/zube/config.yml
+zube config init
+```
+
 You must also save your **Zube private key** `.pem` file in `~/.ssh/zube_api_key.pem`
 
 This file is also used to cache your `access token`, so make sure only you have access to it.
