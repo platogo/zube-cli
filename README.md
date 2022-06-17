@@ -21,7 +21,10 @@ make
 make install
 ```
 
-`zube` expects a configuration file with your **client_id** (located at `~/config/zube/config.yml`)
+`zube` expects a configuration file with your **client_id**.
+`zube` looks for this configuration file, in order, in:
+ - `~/config/zube/config.yml`
+ - `$XDG_CONFIG_HOME/zube/config.yml`
 
 You can find out how to get the `client_id` in the [offical Zube docs](https://zube.io/docs/api#authentication-section).
 
@@ -31,10 +34,20 @@ Example of a `config.yml`:
 client_id: some-super-long-client-id
 ```
 
-Easiest way to set your `client_id` is by calling
+Easiest way to set your `client_id` is by:
 
-```bash
+Creating the configuration file, with either
+
+``` bash
 touch ~/config/zube/config.yml
+```
+
+``` bash
+touch $XDG_CONFIG_HOME/zube/config.yml
+```
+
+Initializing the config
+```bash
 zube config init
 ```
 
