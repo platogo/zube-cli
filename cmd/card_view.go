@@ -28,9 +28,8 @@ import (
 	"github.com/platogo/zube-cli/zube/models"
 )
 
-// TODO: Rename to cardViewCmd
-// viewCmd represents the view command
-var viewCmd = &cobra.Command{
+// cardViewCmd represents the view command
+var cardViewCmd = &cobra.Command{
 	Use:   "view",
 	Short: "Display the title, status, body and other info about a Zube card.",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -58,7 +57,7 @@ var viewCmd = &cobra.Command{
 }
 
 func init() {
-	cardCmd.AddCommand(viewCmd)
+	cardCmd.AddCommand(cardViewCmd)
 }
 
 func printCard(card *models.Card) {
@@ -84,7 +83,7 @@ func printCard(card *models.Card) {
 	fmt.Println()
 	fmt.Println(bodyFormat)
 	fmt.Println()
-	fmt.Println(Bold("View this card on Zube: " + "https://zube.io/platogo/platogo/c/" + fmt.Sprint(card.Number)))
+	fmt.Println(Bold("View this card on Zube: " + "https://zube.io/platogo/platogo/c/" + fmt.Sprint(card.Number))) // TODO: Replace with generic method
 }
 
 func printComments(comments *[]models.Comment) {

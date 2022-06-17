@@ -159,7 +159,7 @@ type Card struct {
 	LastCommentAt string `json:"last_comment_at"`
 	Number        int    `json:"number"`
 	Points        int    `json:"points"`
-	Priority      int    `json:"priority"`
+	Priority      int    `json:"priority"` // must be one of 1, 2, 3, 4, 5, or null
 	SearchKey     string `json:"search_key"`
 	State         string `json:"state"`
 	Status        string `json:"status"`
@@ -172,6 +172,7 @@ type Card struct {
 	Creator   []Person   `json:"creator"`
 	Epic      Epic       `json:"epic"`
 	Labels    []Label    `json:"labels"`
+	LabelIds  []int      `json:"label_ids"`
 }
 
 type Comment struct {
