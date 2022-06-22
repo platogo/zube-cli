@@ -36,9 +36,11 @@ func Execute() {
 func init() {
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.zube-cli.yaml)")
 	defaultConfigPath := filepath.Join("$HOME", "config", "zube")
+	xdgConfigPath := filepath.Join("$XDG_CONFIG_HOME", "zube")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(defaultConfigPath)
+	viper.AddConfigPath(xdgConfigPath)
 
 	err := viper.ReadInConfig()
 
