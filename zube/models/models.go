@@ -1,5 +1,7 @@
 package models
 
+import "github.com/markphelps/optional"
+
 // Zube Response resources as defined in the official documentation: https://zube.io/docs/api
 
 type Pagination struct {
@@ -10,7 +12,7 @@ type Pagination struct {
 }
 
 type Resource interface {
-	Account | Card | Comment | Project | Label | Epic | Source | Workspace
+	Account | Card | Comment | Project | Label | Epic | Source | Workspace | Member
 }
 
 type Data[T Resource] struct {
@@ -42,6 +44,15 @@ type Assignee struct {
 	Person
 }
 
+type Member struct {
+	Person
+	GithubUserId       int  `json:"github_user_id"`
+	IsUser             bool `json:"is_user"`
+	NameIsLocked       bool `json:"name_is_locked"`
+	AvatarPathIsLocked bool `json:"avatar_path_is_locked"`
+	Timestamps
+}
+
 type Timestamps struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
@@ -63,12 +74,37 @@ type Account struct {
 }
 
 type Epic struct {
-	Id          int    `json:"id"`
-	WorkspaceId int    `json:"workspace_id"`
-	Number      int    `json:"number"`
-	Status      string `json:"status"`
-	Color       string `json:"color"`
-	Title       string `json:"title"`
+	Id               int    `json:"id"`
+	AssigneeId       int    `json:"assignee_id"`
+	CreatorId        int    `json:"creator_id"`
+	WorkspaceId      int    `json:"workspace_id"`
+	ProjectId        int    `json:"project_id"`
+	CardsStatus      string `json:"cards_status"`
+	Description      string `json:"description"`
+	DueOn            string `json:"due_on"`
+	Number           int    `json:"number"`
+	SearchKey        string `json:"search_key"`
+	State            string `json:"state"`
+	Status           string `json:"status"`
+	Color            string `json:"color"`
+	Title            string `json:"title"`
+	TrackCards       bool   `json:"track_cards"`
+	OpenCardsCount   int    `json:"open_cards_count"`
+	ClosedCardsCount int    `json:"closed_cards_count"`
+	OpenPoints       int    `json:"open_points"`
+	ClosedPoints     int    `json:"closed_points"`
+	CommentsCount    int    `json:"comments_count"`
+	ClosedAt         string `json:"closed_at"`
+	Timestamps
+	CloserId   int    `json:"closed_id"`
+	Priority   int    `json:"priority"`
+	StartDate  string `json:"start_date"`
+	Rank       string `json:"rank"`
+	EpicListId int    `json:"epic_list_id"`
+	Assignee   `json:"assignee"`
+	Closer     Person  `json:"closer"`
+	Creator    Person  `json:"creator"`
+	Labels     []Label `json:"labels"`
 }
 
 type Workspace struct {
@@ -147,31 +183,33 @@ type GithubIssue struct {
 }
 
 type Card struct {
-	Id            int    `json:"id"`
-	CreatorId     int    `json:"creator_id"`
-	ProjectId     int    `json:"project_id"`
-	SprintId      int    `json:"sprint_id"`
-	WorkspaceId   int    `json:"workspace_id"`
-	Body          string `json:"body"`
-	CategoryName  string `json:"category_name"`
-	ClosedAt      string `json:"closed_at"`
-	CommentsCount int    `json:"comments_count"`
-	LastCommentAt string `json:"last_comment_at"`
-	Number        int    `json:"number"`
-	Points        int    `json:"points"`
-	Priority      int    `json:"priority"`
-	SearchKey     string `json:"search_key"`
-	State         string `json:"state"`
-	Status        string `json:"status"`
-	Title         string `json:"title"`
-	UpvotesCount  int    `json:"upvotes_count"`
+	Id            int          `json:"id"`
+	CreatorId     int          `json:"creator_id"`
+	ProjectId     int          `json:"project_id"`
+	SprintId      int          `json:"sprint_id"`
+	WorkspaceId   int          `json:"workspace_id"`
+	Body          string       `json:"body"`
+	CategoryName  string       `json:"category_name"`
+	ClosedAt      string       `json:"closed_at"`
+	CommentsCount int          `json:"comments_count"`
+	LastCommentAt string       `json:"last_comment_at"`
+	Number        int          `json:"number"`
+	Points        int          `json:"points"`
+	Priority      optional.Int `json:"priority"` // must be one of 1, 2, 3, 4, 5, or null
+	SearchKey     string       `json:"search_key"`
+	State         string       `json:"state"`
+	Status        string       `json:"status"`
+	Title         string       `json:"title"`
+	UpvotesCount  int          `json:"upvotes_count"`
 	Timestamps
-	EpicId    int        `json:"epic_id"`
-	CloserId  int        `json:"closer_id"`
-	Assignees []Assignee `json:"assignees"`
-	Creator   []Person   `json:"creator"`
-	Epic      Epic       `json:"epic"`
-	Labels    []Label    `json:"labels"`
+	EpicId      int        `json:"epic_id"`
+	CloserId    int        `json:"closer_id"`
+	Assignees   []Assignee `json:"assignees"`
+	AssigneeIds []int      `json:"assignee_ids"`
+	Creator     []Person   `json:"creator"`
+	Epic        Epic       `json:"epic"`
+	Labels      []Label    `json:"labels"`
+	LabelIds    []int      `json:"label_ids"`
 }
 
 type Comment struct {

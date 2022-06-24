@@ -1,6 +1,7 @@
 package zube
 
 import (
+	"bytes"
 	"crypto/rsa"
 	"crypto/sha1"
 	"encoding/json"
@@ -181,7 +182,20 @@ func (client *Client) FetchCardComments(cardId int) []models.Comment {
 	return response.Data
 }
 
-func (client *Client) CreateCard() {}
+func (client *Client) CreateCard(card *models.Card) models.Card {
+	var respCard models.Card
+	url := zubeURL("/api/cards", Query{})
+	data, _ := json.Marshal(card)
+	resp, err := client.performAPIRequestURL(http.MethodPost, &url, bytes.NewBuffer(data))
+
+	if err != nil {
+		log.Fatalf("failed to create card!")
+	}
+
+	json.Unmarshal(resp, &respCard)
+
+	return respCard
+}
 
 func (client *Client) FetchWorkspaces() []models.Workspace {
 	var response models.PaginatedResponse[models.Workspace]
@@ -259,6 +273,37 @@ func (client *Client) FetchProjectCards(projectId int, query *Query) []models.Ca
 	return response.Data
 }
 
+func (client *Client) FetchProjectMembers(projectId int) []models.Member {
+	var response models.PaginatedResponse[models.Member]
+
+	url := zubeURL(fmt.Sprintf("/api/projects/%d/members", projectId), Query{})
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatalf("Failed to fetch cards for project with Id: %d", projectId)
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
+// Fetch all labels for a given project
+func (client *Client) FetchLabels(projectId int) []models.Label {
+	var response models.PaginatedResponse[models.Label]
+
+	url := zubeURL(fmt.Sprintf("/api/projects/%d/labels", projectId), Query{})
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatalf("Failed to fetch labels for project with Id: %d", projectId)
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 // Wrapper around `performAPIRequestURL` for e.g. GET requests with no request body
 func (client *Client) performAPIRequestURLNoBody(method string, url *url.URL) ([]byte, error) {
 	return client.performAPIRequestURL(method, url, nil)
@@ -285,6 +330,7 @@ func (client *Client) performAPIRequestURL(method string, url *url.URL, body io.
 	req.Header.Add("User-Agent", UserAgent)
 	if body != nil && (method == http.MethodPost || method == http.MethodPut || method == http.MethodPatch) {
 		req.Header.Add("Accept", "application/json")
+		req.Header.Add("Content-Type", "application/json")
 	}
 
 	resp, _ := client.HTTPc.Do(req)

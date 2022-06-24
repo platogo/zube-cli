@@ -32,7 +32,6 @@ var epicLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "A brief description of your command",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("epicLs called")
 		if client, err := zube.NewClient(); err == nil {
 			projectId, _ := cmd.Flags().GetInt("project-id")
 			epics := client.FetchEpics(projectId)

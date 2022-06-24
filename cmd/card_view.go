@@ -28,9 +28,8 @@ import (
 	"github.com/platogo/zube-cli/zube/models"
 )
 
-// TODO: Rename to cardViewCmd
-// viewCmd represents the view command
-var viewCmd = &cobra.Command{
+// cardViewCmd represents the view command
+var cardViewCmd = &cobra.Command{
 	Use:   "view",
 	Short: "Display the title, status, body and other info about a Zube card.",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -58,7 +57,7 @@ var viewCmd = &cobra.Command{
 }
 
 func init() {
-	cardCmd.AddCommand(viewCmd)
+	cardCmd.AddCommand(cardViewCmd)
 }
 
 func printCard(card *models.Card) {
@@ -73,6 +72,8 @@ func printCard(card *models.Card) {
 		assigneeNames = append(assigneeNames, assignee.Username)
 	}
 
+	priority := card.Priority.OrElse(0)
+
 	titleFormat := Reverse(card.Title + " #" + fmt.Sprint(card.Number)).Bold()
 	statusFormat := Underline(utils.SnakeCaseToTitleCase(card.Status))
 	bodyFormat := Gray(22, card.Body)
@@ -80,11 +81,16 @@ func printCard(card *models.Card) {
 	fmt.Println(titleFormat)
 	fmt.Println(statusFormat)
 	fmt.Println(Bold("Assignees:"), strings.Join(assigneeNames, " "))
-	fmt.Println(Bold("Labels: "), strings.Join(labels, " "))
+	fmt.Println(Bold("Labels:"), strings.Join(labels, " "))
+
+	if priority != 0 {
+		fmt.Println(Bold("Priority:"), fmt.Sprintf("P%d", priority))
+	}
+
 	fmt.Println()
 	fmt.Println(bodyFormat)
 	fmt.Println()
-	fmt.Println(Bold("View this card on Zube: " + "https://zube.io/platogo/platogo/c/" + fmt.Sprint(card.Number)))
+	fmt.Println(Bold("View this card on Zube: " + "https://zube.io/platogo/platogo/c/" + fmt.Sprint(card.Number))) // TODO: Replace with generic method
 }
 
 func printComments(comments *[]models.Comment) {
