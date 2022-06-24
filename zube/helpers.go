@@ -103,3 +103,45 @@ func ParsePriority(priority string) optional.Int {
 
 	return optional.NewInt(p)
 }
+
+func MemberNames(members *[]models.Member) []string {
+	var names []string
+
+	for _, m := range *members {
+		names = append(names, m.Name)
+	}
+
+	return names
+}
+
+func GetMembersByNames(names []string, members []models.Member) []models.Member {
+	var foundMembers []models.Member
+
+	for _, m := range members {
+		if Contains(names, m.Name) {
+			foundMembers = append(foundMembers, m)
+		}
+	}
+
+	return foundMembers
+}
+
+func MemberIds(members *[]models.Member) []int {
+	var ids []int
+
+	for _, m := range *members {
+		ids = append(ids, m.Id)
+	}
+
+	return ids
+}
+
+// Check if `coll` contains an element `e` of type `T`
+func Contains[T comparable](coll []T, e T) bool {
+	for _, item := range coll {
+		if item == e {
+			return true
+		}
+	}
+	return false
+}

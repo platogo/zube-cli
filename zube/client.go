@@ -273,6 +273,21 @@ func (client *Client) FetchProjectCards(projectId int, query *Query) []models.Ca
 	return response.Data
 }
 
+func (client *Client) FetchProjectMembers(projectId int) []models.Member {
+	var response models.PaginatedResponse[models.Member]
+
+	url := zubeURL(fmt.Sprintf("/api/projects/%d/members", projectId), Query{})
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	if err != nil {
+		log.Fatalf("Failed to fetch cards for project with Id: %d", projectId)
+	}
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 // Fetch all labels for a given project
 func (client *Client) FetchLabels(projectId int) []models.Label {
 	var response models.PaginatedResponse[models.Label]

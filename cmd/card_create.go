@@ -54,6 +54,7 @@ var cardCreateCmd = &cobra.Command{
 
 		labels := client.FetchLabels(project.Id)
 		epics := client.FetchEpics(project.Id)
+		members := client.FetchProjectMembers(project.Id)
 
 		qs := []*survey.Question{
 			{
@@ -83,6 +84,13 @@ var cardCreateCmd = &cobra.Command{
 				},
 			},
 			{
+				Name: "assignees",
+				Prompt: &survey.MultiSelect{
+					Message: "Pick assignees:",
+					Options: zube.MemberNames(&members),
+				},
+			},
+			{
 				Name: "epic",
 				Prompt: &survey.Select{
 					Message: "Choose epic:",
@@ -100,11 +108,10 @@ var cardCreateCmd = &cobra.Command{
 			},
 		}
 
-		// TODO: Set assignees
-
 		answers := struct {
 			Workspace, Epic, Priority, Title, Description string
 			Labels                                        []int
+			Assignees                                     []string
 		}{}
 
 		err = survey.Ask(qs, &answers)
@@ -121,6 +128,8 @@ var cardCreateCmd = &cobra.Command{
 
 		labels = zube.GetLabelsByIndexes(answers.Labels, labels)
 
+		assignees := zube.GetMembersByNames(answers.Assignees, members)
+
 		card := models.Card{
 			ProjectId:   project.Id,
 			WorkspaceId: workspace.Id,
@@ -128,7 +137,8 @@ var cardCreateCmd = &cobra.Command{
 			Title:       answers.Title,
 			Priority:    priority,
 			Body:        answers.Description,
-			LabelIds:    zube.LabelIds(&labels)}
+			LabelIds:    zube.LabelIds(&labels),
+			AssigneeIds: zube.MemberIds(&assignees)}
 
 		respCard := client.CreateCard(&card)
 		fmt.Printf("Card created with No: %d\n", respCard.Number)

@@ -12,7 +12,7 @@ type Pagination struct {
 }
 
 type Resource interface {
-	Account | Card | Comment | Project | Label | Epic | Source | Workspace
+	Account | Card | Comment | Project | Label | Epic | Source | Workspace | Member
 }
 
 type Data[T Resource] struct {
@@ -202,13 +202,14 @@ type Card struct {
 	Title         string       `json:"title"`
 	UpvotesCount  int          `json:"upvotes_count"`
 	Timestamps
-	EpicId    int        `json:"epic_id"`
-	CloserId  int        `json:"closer_id"`
-	Assignees []Assignee `json:"assignees"`
-	Creator   []Person   `json:"creator"`
-	Epic      Epic       `json:"epic"`
-	Labels    []Label    `json:"labels"`
-	LabelIds  []int      `json:"label_ids"`
+	EpicId      int        `json:"epic_id"`
+	CloserId    int        `json:"closer_id"`
+	Assignees   []Assignee `json:"assignees"`
+	AssigneeIds []int      `json:"assignee_ids"`
+	Creator     []Person   `json:"creator"`
+	Epic        Epic       `json:"epic"`
+	Labels      []Label    `json:"labels"`
+	LabelIds    []int      `json:"label_ids"`
 }
 
 type Comment struct {
