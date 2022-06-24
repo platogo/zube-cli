@@ -1,5 +1,7 @@
 package models
 
+import "github.com/markphelps/optional"
+
 // Zube Response resources as defined in the official documentation: https://zube.io/docs/api
 
 type Pagination struct {
@@ -40,6 +42,15 @@ type CurrentPerson struct {
 
 type Assignee struct {
 	Person
+}
+
+type Member struct {
+	Person
+	GithubUserId       int  `json:"github_user_id"`
+	IsUser             bool `json:"is_user"`
+	NameIsLocked       bool `json:"name_is_locked"`
+	AvatarPathIsLocked bool `json:"avatar_path_is_locked"`
+	Timestamps
 }
 
 type Timestamps struct {
@@ -172,24 +183,24 @@ type GithubIssue struct {
 }
 
 type Card struct {
-	Id            int    `json:"id"`
-	CreatorId     int    `json:"creator_id"`
-	ProjectId     int    `json:"project_id"`
-	SprintId      int    `json:"sprint_id"`
-	WorkspaceId   int    `json:"workspace_id"`
-	Body          string `json:"body"`
-	CategoryName  string `json:"category_name"`
-	ClosedAt      string `json:"closed_at"`
-	CommentsCount int    `json:"comments_count"`
-	LastCommentAt string `json:"last_comment_at"`
-	Number        int    `json:"number"`
-	Points        int    `json:"points"`
-	Priority      int    `json:"priority"` // must be one of 1, 2, 3, 4, 5, or null
-	SearchKey     string `json:"search_key"`
-	State         string `json:"state"`
-	Status        string `json:"status"`
-	Title         string `json:"title"`
-	UpvotesCount  int    `json:"upvotes_count"`
+	Id            int          `json:"id"`
+	CreatorId     int          `json:"creator_id"`
+	ProjectId     int          `json:"project_id"`
+	SprintId      int          `json:"sprint_id"`
+	WorkspaceId   int          `json:"workspace_id"`
+	Body          string       `json:"body"`
+	CategoryName  string       `json:"category_name"`
+	ClosedAt      string       `json:"closed_at"`
+	CommentsCount int          `json:"comments_count"`
+	LastCommentAt string       `json:"last_comment_at"`
+	Number        int          `json:"number"`
+	Points        int          `json:"points"`
+	Priority      optional.Int `json:"priority"` // must be one of 1, 2, 3, 4, 5, or null
+	SearchKey     string       `json:"search_key"`
+	State         string       `json:"state"`
+	Status        string       `json:"status"`
+	Title         string       `json:"title"`
+	UpvotesCount  int          `json:"upvotes_count"`
 	Timestamps
 	EpicId    int        `json:"epic_id"`
 	CloserId  int        `json:"closer_id"`

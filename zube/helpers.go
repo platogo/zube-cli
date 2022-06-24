@@ -1,9 +1,10 @@
 package zube
 
 import (
-	"errors"
 	"fmt"
+	"strconv"
 
+	"github.com/markphelps/optional"
 	"github.com/platogo/zube-cli/zube/models"
 )
 
@@ -23,7 +24,7 @@ func GetProjectByName(name string, projects *[]models.Project) (models.Project, 
 			return p, nil
 		}
 	}
-	return models.Project{}, errors.New(fmt.Sprintf("could not find project with name: %s", name))
+	return models.Project{}, fmt.Errorf("could not find project with name: %s", name)
 }
 
 // Convert workspaces to a slice of workspace names
@@ -36,13 +37,13 @@ func WorkspaceNames(workspaces *[]models.Workspace) []string {
 	return names
 }
 
-func GetWorkspaceByName(name string, workspaces *[]models.Workspace) (models.Workspace, error) {
+func GetWorkspaceByName(name string, workspaces *[]models.Workspace) models.Workspace {
 	for _, w := range *workspaces {
 		if w.Name == name {
-			return w, nil
+			return w
 		}
 	}
-	return models.Workspace{}, errors.New(fmt.Sprintf("could not find workspace with name: %s", name))
+	return models.Workspace{}
 }
 
 // Convert labels to a slice of label names
@@ -71,4 +72,34 @@ func GetLabelsByIndexes(indexes []int, labels []models.Label) []models.Label {
 		res = append(res, labels[index])
 	}
 	return res
+}
+
+func EpicTitles(epics *[]models.Epic) []string {
+	var titles []string
+
+	for _, e := range *epics {
+		titles = append(titles, e.Title)
+	}
+
+	return titles
+}
+
+func GetEpicByTitle(title string, epics *[]models.Epic) models.Epic {
+	for _, e := range *epics {
+		if e.Title == title {
+			return e
+		}
+	}
+
+	return models.Epic{}
+}
+
+func ParsePriority(priority string) optional.Int {
+	if priority == "None" {
+		return optional.Int{}
+	}
+
+	p, _ := strconv.Atoi(priority)
+
+	return optional.NewInt(p)
 }

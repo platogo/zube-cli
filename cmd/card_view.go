@@ -72,6 +72,8 @@ func printCard(card *models.Card) {
 		assigneeNames = append(assigneeNames, assignee.Username)
 	}
 
+	priority := card.Priority.OrElse(0)
+
 	titleFormat := Reverse(card.Title + " #" + fmt.Sprint(card.Number)).Bold()
 	statusFormat := Underline(utils.SnakeCaseToTitleCase(card.Status))
 	bodyFormat := Gray(22, card.Body)
@@ -79,7 +81,12 @@ func printCard(card *models.Card) {
 	fmt.Println(titleFormat)
 	fmt.Println(statusFormat)
 	fmt.Println(Bold("Assignees:"), strings.Join(assigneeNames, " "))
-	fmt.Println(Bold("Labels: "), strings.Join(labels, " "))
+	fmt.Println(Bold("Labels:"), strings.Join(labels, " "))
+
+	if priority != 0 {
+		fmt.Println(Bold("Priority:"), fmt.Sprintf("P%d", priority))
+	}
+
 	fmt.Println()
 	fmt.Println(bodyFormat)
 	fmt.Println()

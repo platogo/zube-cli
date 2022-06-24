@@ -33,9 +33,12 @@ var cardCreateCmd = &cobra.Command{
 	Long:  `Create a brand new Zube card for a given project.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client, _ := zube.NewClient()
+
 		projects := client.FetchProjects()
 		workspaces := client.FetchWorkspaces()
 
+		// We need to get the project ID before any other question, since the other prompt option fetchers
+		// rely on it
 		var projectName string
 		projectPrompt := &survey.Select{
 			Message: "Choose a project:",
@@ -50,14 +53,16 @@ var cardCreateCmd = &cobra.Command{
 		}
 
 		labels := client.FetchLabels(project.Id)
+		epics := client.FetchEpics(project.Id)
 
 		qs := []*survey.Question{
 			{
 				Name: "workspace",
 				Prompt: &survey.Select{
-					Message: "Choose a workspace:",
-					Options: zube.WorkspaceNames(&workspaces),
-					Default: workspaces[0].Name,
+					Message:  "Choose a workspace:",
+					Options:  zube.WorkspaceNames(&workspaces),
+					Default:  workspaces[0].Name,
+					PageSize: 10,
 				},
 			},
 			{
@@ -77,11 +82,29 @@ var cardCreateCmd = &cobra.Command{
 					Options: zube.LabelNames(&labels),
 				},
 			},
+			{
+				Name: "epic",
+				Prompt: &survey.Select{
+					Message: "Choose epic:",
+					Options: append(zube.EpicTitles(&epics), "None"),
+					Default: "None",
+				},
+			},
+			{
+				Name: "priority",
+				Prompt: &survey.Select{
+					Message: "Priority:",
+					Options: []string{"None", "1", "2", "3", "4", "5"},
+					Default: "None",
+				},
+			},
 		}
 
+		// TODO: Set assignees
+
 		answers := struct {
-			Workspace, Title, Description string
-			Labels                        []int
+			Workspace, Epic, Priority, Title, Description string
+			Labels                                        []int
 		}{}
 
 		err = survey.Ask(qs, &answers)
@@ -90,17 +113,20 @@ var cardCreateCmd = &cobra.Command{
 			return
 		}
 
-		workspace, err := zube.GetWorkspaceByName(answers.Workspace, &workspaces)
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
+		workspace := zube.GetWorkspaceByName(answers.Workspace, &workspaces)
+
+		epic := zube.GetEpicByTitle(answers.Epic, &epics)
+
+		priority := zube.ParsePriority(answers.Priority)
 
 		labels = zube.GetLabelsByIndexes(answers.Labels, labels)
 
 		card := models.Card{
 			ProjectId:   project.Id,
 			WorkspaceId: workspace.Id,
+			EpicId:      epic.Id,
 			Title:       answers.Title,
+			Priority:    priority,
 			Body:        answers.Description,
 			LabelIds:    zube.LabelIds(&labels)}
 
