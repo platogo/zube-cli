@@ -63,12 +63,37 @@ type Account struct {
 }
 
 type Epic struct {
-	Id          int    `json:"id"`
-	WorkspaceId int    `json:"workspace_id"`
-	Number      int    `json:"number"`
-	Status      string `json:"status"`
-	Color       string `json:"color"`
-	Title       string `json:"title"`
+	Id               int    `json:"id"`
+	AssigneeId       int    `json:"assignee_id"`
+	CreatorId        int    `json:"creator_id"`
+	WorkspaceId      int    `json:"workspace_id"`
+	ProjectId        int    `json:"project_id"`
+	CardsStatus      string `json:"cards_status"`
+	Description      string `json:"description"`
+	DueOn            string `json:"due_on"`
+	Number           int    `json:"number"`
+	SearchKey        string `json:"search_key"`
+	State            string `json:"state"`
+	Status           string `json:"status"`
+	Color            string `json:"color"`
+	Title            string `json:"title"`
+	TrackCards       bool   `json:"track_cards"`
+	OpenCardsCount   int    `json:"open_cards_count"`
+	ClosedCardsCount int    `json:"closed_cards_count"`
+	OpenPoints       int    `json:"open_points"`
+	ClosedPoints     int    `json:"closed_points"`
+	CommentsCount    int    `json:"comments_count"`
+	ClosedAt         string `json:"closed_at"`
+	Timestamps
+	CloserId   int    `json:"closed_id"`
+	Priority   int    `json:"priority"`
+	StartDate  string `json:"start_date"`
+	Rank       string `json:"rank"`
+	EpicListId int    `json:"epic_list_id"`
+	Assignee   `json:"assignee"`
+	Closer     Person  `json:"closer"`
+	Creator    Person  `json:"creator"`
+	Labels     []Label `json:"labels"`
 }
 
 type Workspace struct {
