@@ -145,3 +145,8 @@ func Contains[T comparable](coll []T, e T) bool {
 	}
 	return false
 }
+
+// Returns a direct URL to a Zube card
+func CardUrl(account *models.Account, project *models.Project, card *models.Card) string {
+	return fmt.Sprintf("https://zube.io/%s/%s/c/%d", account.Slug, project.Slug, card.Number)
+}
