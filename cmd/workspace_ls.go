@@ -32,7 +32,7 @@ var workspaceLsCmd = &cobra.Command{
 	Short: "List workspaces",
 	Run: func(cmd *cobra.Command, args []string) {
 		client, _ := zube.NewClient()
-		workspaces := client.FetchWorkspaces()
+		workspaces := client.FetchWorkspaces(&zube.Query{})
 		printWorkspaces(&workspaces)
 	},
 }

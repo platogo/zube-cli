@@ -34,14 +34,14 @@ var cardCreateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		client, _ := zube.NewClient()
 
-		projects := client.FetchProjects()
-		workspaces := client.FetchWorkspaces()
+		projects := client.FetchProjects(&zube.Query{})
+		workspaces := client.FetchWorkspaces(&zube.Query{})
 
 		// We need to get the project ID before any other question, since the other prompt option fetchers
 		// rely on it
 		var projectName string
 		projectPrompt := &survey.Select{
-			Message: "Choose a project:",
+			Message: "Project:",
 			Options: zube.ProjectNames(&projects),
 			Default: projects[0].Name,
 		}
@@ -60,7 +60,7 @@ var cardCreateCmd = &cobra.Command{
 			{
 				Name: "workspace",
 				Prompt: &survey.Select{
-					Message:  "Choose a workspace:",
+					Message:  "Workspace:",
 					Options:  zube.WorkspaceNames(&workspaces),
 					Default:  workspaces[0].Name,
 					PageSize: 10,
@@ -68,13 +68,13 @@ var cardCreateCmd = &cobra.Command{
 			},
 			{
 				Name:      "title",
-				Prompt:    &survey.Input{Message: "Card title?"},
+				Prompt:    &survey.Input{Message: "Title?"},
 				Validate:  survey.Required,
 				Transform: survey.Title,
 			},
 			{
 				Name:   "description",
-				Prompt: &survey.Multiline{Message: "Card description?"},
+				Prompt: &survey.Multiline{Message: "Description?"},
 			},
 			{
 				Name: "labels",
@@ -86,14 +86,14 @@ var cardCreateCmd = &cobra.Command{
 			{
 				Name: "assignees",
 				Prompt: &survey.MultiSelect{
-					Message: "Pick assignees:",
+					Message: "Assignees:",
 					Options: zube.MemberNames(&members),
 				},
 			},
 			{
 				Name: "epic",
 				Prompt: &survey.Select{
-					Message: "Choose epic:",
+					Message: "Epic:",
 					Options: append(zube.EpicTitles(&epics), "None"),
 					Default: "None",
 				},
@@ -140,8 +140,12 @@ var cardCreateCmd = &cobra.Command{
 			LabelIds:    zube.LabelIds(&labels),
 			AssigneeIds: zube.MemberIds(&assignees)}
 
-		respCard := client.CreateCard(&card)
-		fmt.Printf("Card created with No: %d\n", respCard.Number)
+		newCard := client.CreateCard(&card)
+		account := client.FetchAccounts(
+			&zube.Query{
+				Filter: zube.Filter{Where: map[string]any{"id": project.AccountId}}})[0]
+
+		fmt.Printf("\nView card on Zube: %s\n", zube.CardUrl(&account, &project, &newCard))
 	},
 }
 

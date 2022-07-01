@@ -197,10 +197,10 @@ func (client *Client) CreateCard(card *models.Card) models.Card {
 	return respCard
 }
 
-func (client *Client) FetchWorkspaces() []models.Workspace {
+func (client *Client) FetchWorkspaces(query *Query) []models.Workspace {
 	var response models.PaginatedResponse[models.Workspace]
 
-	url := zubeURL("/api/workspaces", Query{})
+	url := zubeURL("/api/workspaces", *query)
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
 	if err != nil {
@@ -227,10 +227,10 @@ func (client *Client) FetchEpics(projectId int) []models.Epic {
 }
 
 // Fetch and return an array of `Account`s
-func (client *Client) FetchAccounts() []models.Account {
+func (client *Client) FetchAccounts(query *Query) []models.Account {
 	var response models.PaginatedResponse[models.Account]
 
-	url := zubeURL("/api/accounts", Query{})
+	url := zubeURL("/api/accounts", *query)
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
@@ -242,10 +242,10 @@ func (client *Client) FetchAccounts() []models.Account {
 	return response.Data
 }
 
-func (client *Client) FetchProjects() []models.Project {
+func (client *Client) FetchProjects(query *Query) []models.Project {
 	var response models.PaginatedResponse[models.Project]
 
-	url := zubeURL("/api/projects", Query{})
+	url := zubeURL("/api/projects", *query)
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 

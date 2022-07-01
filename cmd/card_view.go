@@ -47,8 +47,18 @@ var cardViewCmd = &cobra.Command{
 			if len(cards) == 1 {
 				card := cards[0]
 				comments := client.FetchCardComments(card.Id)
-				printCard(&card)
-				printComments(&comments)
+
+				projectQueryById := zube.Query{Filter: zube.Filter{Where: map[string]any{"id": card.ProjectId}}}
+				projects := client.FetchProjects(&projectQueryById)
+				if len(projects) > 0 {
+					project := projects[0]
+					accountQueryById := zube.Query{Filter: zube.Filter{Where: map[string]any{"id": project.AccountId}}}
+					accounts := client.FetchAccounts(&accountQueryById)
+
+					printCard(&accounts[0], &project, &card)
+					printComments(&comments)
+				}
+
 			} else {
 				fmt.Println("Card not found!")
 			}
@@ -60,7 +70,7 @@ func init() {
 	cardCmd.AddCommand(cardViewCmd)
 }
 
-func printCard(card *models.Card) {
+func printCard(account *models.Account, project *models.Project, card *models.Card) {
 	var labels []string
 	var assigneeNames []string
 
@@ -77,6 +87,7 @@ func printCard(card *models.Card) {
 	titleFormat := Reverse(card.Title + " #" + fmt.Sprint(card.Number)).Bold()
 	statusFormat := Underline(utils.SnakeCaseToTitleCase(card.Status))
 	bodyFormat := Gray(22, card.Body)
+	cardUrl := zube.CardUrl(account, project, card)
 
 	fmt.Println(titleFormat)
 	fmt.Println(statusFormat)
@@ -90,7 +101,7 @@ func printCard(card *models.Card) {
 	fmt.Println()
 	fmt.Println(bodyFormat)
 	fmt.Println()
-	fmt.Println(Bold("View this card on Zube: " + "https://zube.io/platogo/platogo/c/" + fmt.Sprint(card.Number))) // TODO: Replace with generic method
+	fmt.Println(Bold("View this card on Zube: " + cardUrl))
 }
 
 func printComments(comments *[]models.Comment) {
