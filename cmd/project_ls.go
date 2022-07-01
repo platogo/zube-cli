@@ -34,7 +34,7 @@ var projectLsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		client, _ := zube.NewClient()
 
-		projects := client.FetchProjects()
+		projects := client.FetchProjects(&zube.Query{})
 		printProjects(&projects)
 	},
 }
