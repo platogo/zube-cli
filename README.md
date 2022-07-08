@@ -2,12 +2,13 @@
 
 [![Go](https://github.com/platogo/zube-cli/actions/workflows/go.yml/badge.svg)](https://github.com/platogo/zube-cli/actions/workflows/go.yml)
 
-`zube-cli` is a small Command Line Utility written in [go](https://go.dev) for interacting with the [Zube](https://zube.io) issue tracking system.
+`zube-cli` is a small Command Line Utility written in [Go](https://go.dev) for interacting with the [Zube](https://zube.io) issue tracking system.
 
 ## Features
 
 - Fetch various Zube resources
 - Construct complex Zube queries
+- Create cards same way you would using the web client
 - Client-side request caching
 
 ## Setup
@@ -23,8 +24,9 @@ make install
 
 `zube` expects a configuration file with your **client_id**.
 `zube` looks for this configuration file, in order, in:
- - `~/config/zube/config.yml`
- - `$XDG_CONFIG_HOME/zube/config.yml`
+
+- `~/config/zube/config.yml`
+- `$XDG_CONFIG_HOME/zube/config.yml`
 
 You can find out how to get the `client_id` in the [offical Zube docs](https://zube.io/docs/api#authentication-section).
 
@@ -47,6 +49,7 @@ touch $XDG_CONFIG_HOME/zube/config.yml
 ```
 
 Initializing the config
+
 ```bash
 zube config init
 ```
@@ -85,12 +88,19 @@ Read [CONTRIBUTING](CONTRIBUTING.md)
 
 ## Roadmap
 
-- [ ] Card interactive creation
-- [ ] Card editing & state transition
-- [ ] Card queries / search by text
+- Cards
+  - [x] interactive creation
+  - [ ] editing
+  - [ ] movement
+  - [ ] archiving
+  - [ ] commenting
+  - [ ] Card queries / search by text
 - [ ] Homebrew formula
 - [ ] **Zube Query Launguage (ZQL)** parser as alternative for command line flag filters
 - [ ] Filter support by name instead of just by IDs
 - [ ] Optionally dump response data as JSON
 - [ ] `zubed` daemon for periodic update polling
 - [ ] Move `zube` functionality into dedicated `zube-go` library
+- Internal
+  - [x] request caching
+  - [ ] smart automatic auth using browser cookie store access
