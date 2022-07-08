@@ -142,9 +142,7 @@ func (client *Client) FetchCurrentPerson() models.CurrentPerson {
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatal("Failed to fetch current person info!")
-	}
+	Check(err, "failed to fetch current person info!")
 
 	json.Unmarshal(body, &currentPerson)
 	return currentPerson
@@ -159,9 +157,7 @@ func (client *Client) FetchCards(query *Query) []models.Card {
 	// TODO: Support pagination
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatal("Failed to fetch list of cards")
-	}
+	Check(err, "failed to fetch cards!")
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -174,9 +170,7 @@ func (client *Client) FetchCardComments(cardId int) []models.Comment {
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatalf("Failed to fetch comments for card with Id: %d", cardId)
-	}
+	Check(err, fmt.Sprintf("failed to fetch comments for card with Id: %d", cardId))
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -188,9 +182,7 @@ func (client *Client) CreateCard(card *models.Card) models.Card {
 	data, _ := json.Marshal(card)
 	resp, err := client.performAPIRequestURL(http.MethodPost, &url, bytes.NewBuffer(data))
 
-	if err != nil {
-		log.Fatalf("failed to create card!")
-	}
+	Check(err, "failed to create card!")
 
 	json.Unmarshal(resp, &respCard)
 
@@ -203,9 +195,7 @@ func (client *Client) FetchWorkspaces(query *Query) []models.Workspace {
 	url := zubeURL("/api/workspaces", *query)
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatal("Failed to fetch list of workspaces")
-	}
+	Check(err, "failed to fetch workspaces!")
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -218,9 +208,7 @@ func (client *Client) FetchEpics(projectId int) []models.Epic {
 	url := zubeURL(fmt.Sprintf("/api/projects/%d/epics", projectId), Query{})
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatalf("Failed to fetch cards for project with Id: %d", projectId)
-	}
+	Check(err, fmt.Sprintf("failed to fetch card for project with Id: %d", projectId))
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -234,9 +222,21 @@ func (client *Client) FetchAccounts(query *Query) []models.Account {
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatal("Failed to fetch list of accounts")
-	}
+	Check(err, "failed to fetch accounts")
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
+// Fetch and return an array of Github `Source`s
+func (client *Client) FetchSources() []models.Source {
+	var response models.PaginatedResponse[models.Source]
+
+	url := zubeURL("/api/sources", Query{})
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	Check(err, "failed to fetch sources")
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -249,9 +249,7 @@ func (client *Client) FetchProjects(query *Query) []models.Project {
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatal("Failed to fetch list of projects")
-	}
+	Check(err, "failed to fetch projects")
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -265,9 +263,7 @@ func (client *Client) FetchProjectCards(projectId int, query *Query) []models.Ca
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatalf("Failed to fetch cards for project with Id: %d", projectId)
-	}
+	Check(err, fmt.Sprintf("failed to fetch cards for project with Id: %d", projectId))
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -280,9 +276,7 @@ func (client *Client) FetchProjectMembers(projectId int) []models.Member {
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatalf("Failed to fetch cards for project with Id: %d", projectId)
-	}
+	Check(err, fmt.Sprintf("failed to fetch project members for project with Id: %d", projectId))
 
 	json.Unmarshal(body, &response)
 	return response.Data
@@ -296,9 +290,7 @@ func (client *Client) FetchLabels(projectId int) []models.Label {
 
 	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
 
-	if err != nil {
-		log.Fatalf("Failed to fetch labels for project with Id: %d", projectId)
-	}
+	Check(err, fmt.Sprintf("failed to fetch labels for project with Id: %d", projectId))
 
 	json.Unmarshal(body, &response)
 	return response.Data

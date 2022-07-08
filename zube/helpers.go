@@ -2,11 +2,18 @@ package zube
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/markphelps/optional"
 	"github.com/platogo/zube-cli/zube/models"
 )
+
+func Check(err error, msg string) {
+	if err != nil {
+		log.Fatal(msg)
+	}
+}
 
 // Convert projects to a slice of project names
 func ProjectNames(projects *[]models.Project) []string {
@@ -134,6 +141,26 @@ func MemberIds(members *[]models.Member) []int {
 	}
 
 	return ids
+}
+
+func SourceNames(sources *[]models.Source) []string {
+	var names []string
+
+	for _, source := range *sources {
+		names = append(names, source.Name)
+	}
+
+	return names
+}
+
+func GetSourceByName(name string, sources *[]models.Source) models.Source {
+	for _, source := range *sources {
+		if source.Name == name {
+			return source
+		}
+	}
+
+	return models.Source{}
 }
 
 // Check if `coll` contains an element `e` of type `T`
