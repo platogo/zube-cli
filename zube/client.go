@@ -242,6 +242,20 @@ func (client *Client) FetchAccounts(query *Query) []models.Account {
 	return response.Data
 }
 
+// Fetch and return an array of Github `Source`s
+func (client *Client) FetchSources() []models.Source {
+	var response models.PaginatedResponse[models.Source]
+
+	url := zubeURL("/api/sources", Query{})
+
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	Check(err, "failed to fetch sources")
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 func (client *Client) FetchProjects(query *Query) []models.Project {
 	var response models.PaginatedResponse[models.Project]
 

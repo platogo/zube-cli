@@ -202,14 +202,15 @@ type Card struct {
 	Title         string       `json:"title"`
 	UpvotesCount  int          `json:"upvotes_count"`
 	Timestamps
-	EpicId      int        `json:"epic_id"`
-	CloserId    int        `json:"closer_id"`
-	Assignees   []Assignee `json:"assignees"`
-	AssigneeIds []int      `json:"assignee_ids"`
-	Creator     []Person   `json:"creator"`
-	Epic        Epic       `json:"epic"`
-	Labels      []Label    `json:"labels"`
-	LabelIds    []int      `json:"label_ids"`
+	GithubIssue GithubIssue `json:"github_issue"`
+	EpicId      int         `json:"epic_id"`
+	CloserId    int         `json:"closer_id"`
+	Assignees   []Assignee  `json:"assignees"`
+	AssigneeIds []int       `json:"assignee_ids"`
+	Creator     []Person    `json:"creator"`
+	Epic        Epic        `json:"epic"`
+	Labels      []Label     `json:"labels"`
+	LabelIds    []int       `json:"label_ids"`
 }
 
 type Comment struct {

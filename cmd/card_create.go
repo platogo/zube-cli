@@ -36,6 +36,7 @@ var cardCreateCmd = &cobra.Command{
 
 		projects := client.FetchProjects(&zube.Query{})
 		workspaces := client.FetchWorkspaces(&zube.Query{})
+		sources := client.FetchSources()
 
 		// We need to get the project ID before any other question, since the other prompt option fetchers
 		// rely on it
@@ -99,6 +100,14 @@ var cardCreateCmd = &cobra.Command{
 				},
 			},
 			{
+				Name: "source",
+				Prompt: &survey.Select{
+					Message: "Github source:",
+					Options: append(zube.SourceNames(&sources), "None"),
+					Default: "None",
+				},
+			},
+			{
 				Name: "priority",
 				Prompt: &survey.Select{
 					Message: "Priority:",
@@ -109,9 +118,9 @@ var cardCreateCmd = &cobra.Command{
 		}
 
 		answers := struct {
-			Workspace, Epic, Priority, Title, Description string
-			Labels                                        []int
-			Assignees                                     []string
+			Workspace, Epic, Priority, Title, Description, Source string
+			Labels                                                []int
+			Assignees                                             []string
 		}{}
 
 		err = survey.Ask(qs, &answers)
@@ -123,6 +132,8 @@ var cardCreateCmd = &cobra.Command{
 		workspace := zube.GetWorkspaceByName(answers.Workspace, &workspaces)
 
 		epic := zube.GetEpicByTitle(answers.Epic, &epics)
+
+		source := zube.GetSourceByName(answers.Source, &sources)
 
 		priority := zube.ParsePriority(answers.Priority)
 
@@ -138,7 +149,8 @@ var cardCreateCmd = &cobra.Command{
 			Priority:    priority,
 			Body:        answers.Description,
 			LabelIds:    zube.LabelIds(&labels),
-			AssigneeIds: zube.MemberIds(&assignees)}
+			AssigneeIds: zube.MemberIds(&assignees),
+			GithubIssue: models.GithubIssue{SourceId: source.Id}}
 
 		newCard := client.CreateCard(&card)
 		account := client.FetchAccounts(
