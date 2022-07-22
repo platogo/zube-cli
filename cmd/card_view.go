@@ -98,6 +98,10 @@ func printCard(account *models.Account, project *models.Project, card *models.Ca
 		fmt.Println(Bold("Priority:"), fmt.Sprintf("P%d", priority))
 	}
 
+	if card.GithubIssue.Id != 0 {
+		fmt.Println(Bold("Github:"), fmt.Sprintf("%s#%d", card.GithubIssue.Source.Name, card.GithubIssue.Number))
+	}
+
 	fmt.Println()
 	fmt.Println(bodyFormat)
 	fmt.Println()
