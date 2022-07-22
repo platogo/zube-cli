@@ -20,7 +20,7 @@ type Cache struct {
 }
 
 // Initialize ETag based cache system
-func New() {
+func Init() {
 	os.Mkdir(zubeCacheDir(), 0770)
 }
 
@@ -28,7 +28,7 @@ func New() {
 func Purge() {
 	fmt.Println("Purging Zube cache...")
 	os.RemoveAll(zubeCacheDir())
-	New()
+	Init()
 }
 
 // Try to get a cache entry. Returns empty cache and falsy if does not exist, otherwise truthy.

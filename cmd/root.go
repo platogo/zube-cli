@@ -48,7 +48,7 @@ func init() {
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
 
-	cache.New()
+	cache.Init()
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

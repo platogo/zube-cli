@@ -12,7 +12,7 @@ import (
 const existingKey = "20c22a082fcce4ece7a64f692d9a86fd0f9f06b2"
 
 func setup() {
-	New()
+	Init()
 	mockCacheData := Cache{Etag: "4b61-KvCvo1XgbWyNb1RjJY6Ci2/Z0DA", Data: "peko"}
 	data, _ := json.Marshal(mockCacheData)
 	ioutil.WriteFile(filepath.Join(zubeCacheDir(), existingKey), data, 0666)
