@@ -18,14 +18,11 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 
-	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/utils"
 	"github.com/platogo/zube-cli/zube"
-	"github.com/platogo/zube-cli/zube/models"
 )
 
 // cardViewCmd represents the view command
@@ -55,8 +52,8 @@ var cardViewCmd = &cobra.Command{
 					accountQueryById := zube.Query{Filter: zube.Filter{Where: map[string]any{"id": project.AccountId}}}
 					accounts := client.FetchAccounts(&accountQueryById)
 
-					printCard(&accounts[0], &project, &card)
-					printComments(&comments)
+					utils.PrintCard(&accounts[0], &project, &card)
+					utils.PrintComments(&comments)
 				}
 
 			} else {
@@ -68,53 +65,4 @@ var cardViewCmd = &cobra.Command{
 
 func init() {
 	cardCmd.AddCommand(cardViewCmd)
-}
-
-func printCard(account *models.Account, project *models.Project, card *models.Card) {
-	var labels []string
-	var assigneeNames []string
-
-	for _, label := range card.Labels {
-		labels = append(labels, label.Name)
-	}
-
-	for _, assignee := range card.Assignees {
-		assigneeNames = append(assigneeNames, assignee.Username)
-	}
-
-	priority := card.Priority.OrElse(0)
-
-	titleFormat := Reverse(card.Title + " #" + fmt.Sprint(card.Number)).Bold()
-	statusFormat := Underline(utils.SnakeCaseToTitleCase(card.Status))
-	bodyFormat := Gray(22, card.Body)
-	cardUrl := zube.CardUrl(account, project, card)
-
-	fmt.Println(titleFormat)
-	fmt.Println(statusFormat)
-	fmt.Println(Bold("Assignees:"), strings.Join(assigneeNames, " "))
-	fmt.Println(Bold("Labels:"), strings.Join(labels, " "))
-
-	if priority != 0 {
-		fmt.Println(Bold("Priority:"), fmt.Sprintf("P%d", priority))
-	}
-
-	if card.GithubIssue.Id != 0 {
-		fmt.Println(Bold("Github:"), fmt.Sprintf("%s#%d", card.GithubIssue.Source.Name, card.GithubIssue.Number))
-	}
-
-	fmt.Println()
-	fmt.Println(bodyFormat)
-	fmt.Println()
-	fmt.Println(Bold("View this card on Zube: " + cardUrl))
-}
-
-func printComments(comments *[]models.Comment) {
-
-	fmt.Printf("------\n\n%s\n\n", Bold("Comments"))
-
-	for _, comment := range *comments {
-		fmt.Printf("%s\n%s\n\n", Reverse(comment.Creator.Name), Gray(14, comment.Timestamps.CreatedAt))
-
-		fmt.Println(comment.Body)
-	}
 }

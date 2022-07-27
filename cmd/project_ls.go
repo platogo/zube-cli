@@ -17,12 +17,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"fmt"
-
-	"github.com/InVisionApp/tabular"
-	. "github.com/logrusorgru/aurora"
+	"github.com/platogo/zube-cli/utils"
 	"github.com/platogo/zube-cli/zube"
-	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
 )
 
@@ -35,23 +31,10 @@ var projectLsCmd = &cobra.Command{
 		client, _ := zube.NewClient()
 
 		projects := client.FetchProjects(&zube.Query{})
-		printProjects(&projects)
+		utils.PrintProjects(&projects)
 	},
 }
 
 func init() {
 	projectCmd.AddCommand(projectLsCmd)
-}
-
-func printProjects(projects *[]models.Project) {
-	tab := tabular.New()
-
-	tab.Col("id", "ID", 4)
-	tab.Col("name", "Name", 10)
-	tab.Col("description", "Description", 20)
-
-	format := tab.Print("id", "name", "description")
-	for _, project := range *projects {
-		fmt.Printf(format, BrightMagenta(project.Id), project.Name, project.Description)
-	}
 }

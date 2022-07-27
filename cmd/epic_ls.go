@@ -17,13 +17,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"fmt"
-
-	"github.com/InVisionApp/tabular"
-	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/utils"
 	"github.com/platogo/zube-cli/zube"
-	"github.com/platogo/zube-cli/zube/models"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +30,7 @@ var epicLsCmd = &cobra.Command{
 		if client, err := zube.NewClient(); err == nil {
 			projectId, _ := cmd.Flags().GetInt("project-id")
 			epics := client.FetchEpics(projectId)
-			printEpics(&epics)
+			utils.PrintEpics(&epics)
 		}
 	},
 }
@@ -44,17 +39,4 @@ func init() {
 	epicCmd.AddCommand(epicLsCmd)
 	epicLsCmd.Flags().Int("project-id", 0, "Project ID")
 	epicLsCmd.MarkFlagRequired("project-id")
-}
-
-func printEpics(epics *[]models.Epic) {
-	tab := tabular.New()
-
-	tab.Col("id", "ID", 6)
-	tab.Col("title", "Title", 40)
-	tab.Col("status", "Status", 10)
-
-	format := tab.Print("id", "title", "status")
-	for _, epic := range *epics {
-		fmt.Printf(format, BrightMagenta(epic.Id), epic.Title, utils.SnakeCaseToTitleCase(epic.Status))
-	}
 }

@@ -5,11 +5,6 @@ Copyright © 2022 Daniils Petrovs <daniils@platogo.com>
 package cmd
 
 import (
-	"fmt"
-	"unicode/utf8"
-
-	"github.com/InVisionApp/tabular"
-	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/utils"
 	"github.com/platogo/zube-cli/zube"
 	"github.com/platogo/zube-cli/zube/models"
@@ -35,7 +30,7 @@ var cardLsCmd = &cobra.Command{
 			cards = client.FetchCards(&query)
 		}
 
-		printCards(&cards)
+		utils.PrintCards(&cards)
 	},
 }
 
@@ -53,31 +48,4 @@ func init() {
 	cardLsCmd.Flags().String("assignee-id", "", "Filter by assignee")
 	cardLsCmd.Flags().String("state", "", "Filter by card state")
 	cardLsCmd.Flags().String("status", "", "Filter by card status")
-}
-
-func printCards(cards *[]models.Card) {
-	const maxTitleLen = 60
-
-	tab := tabular.New()
-
-	tab.Col("no", "Number", 6)
-	tab.Col("title", "Title", maxTitleLen+6)
-	tab.Col("status", "Status", 10)
-
-	format := tab.Print("no", "title", "status")
-
-	for _, card := range *cards {
-
-		fmtTitle := utils.TruncateString(card.Title, maxTitleLen)
-
-		if utf8.RuneCountInString(card.Title) > maxTitleLen {
-			fmtTitle += "..."
-		}
-
-		fmt.Printf(format,
-			BrightGreen(card.Number),
-			fmtTitle,
-			utils.SnakeCaseToTitleCase(card.Status),
-		)
-	}
 }
