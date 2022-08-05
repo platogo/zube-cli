@@ -48,6 +48,7 @@ type Query struct {
 	Pagination
 	Order
 	Filter
+	Search string `json:"search"` // Undocumented search API query parameter, pass search query string here
 }
 
 // Encodes everything in `Query` into a flat Zube query string
@@ -69,6 +70,11 @@ func (query *Query) Encode() string {
 		default:
 			q.Add(fmt.Sprintf("where[%s]", field), fmt.Sprint(v))
 		}
+	}
+
+	// Search
+	if query.Search != "" {
+		q.Add("search", query.Search)
 	}
 
 	for _, col := range query.Filter.Select {
@@ -187,6 +193,19 @@ func (client *Client) CreateCard(card *models.Card) models.Card {
 	json.Unmarshal(resp, &respCard)
 
 	return respCard
+}
+
+// Search Zube cards using a simple Query struct with `search` field in it.
+func (client *Client) SearchCards(query *Query) []models.Card {
+	var response models.PaginatedResponse[models.Card]
+
+	url := zubeURL("/api/cards", *query)
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	Check(err, fmt.Sprintf("failed to find card with text: %s", query.Search))
+
+	json.Unmarshal(body, &response)
+	return response.Data
 }
 
 func (client *Client) FetchWorkspaces(query *Query) []models.Workspace {
