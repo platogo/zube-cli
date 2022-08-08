@@ -44,7 +44,9 @@ var searchCmd = &cobra.Command{
 		}
 
 		client, _ := zube.NewClient()
-		cards := client.SearchCards(&zube.Query{Search: searchQuery})
+		query := utils.NewQueryFromFlags(cmd.LocalFlags())
+		query.Search = searchQuery
+		cards := client.SearchCards(&query)
 
 		switch len(cards) {
 		case 0:
@@ -66,13 +68,15 @@ var searchCmd = &cobra.Command{
 func init() {
 	cardCmd.AddCommand(searchCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// searchCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// searchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	searchCmd.Flags().Int("id", 0, "Filter by card internal ID")
+	searchCmd.Flags().String("category", "", "Filter by category name")
+	searchCmd.Flags().Int("epic-id", 0, "Filter by epic ID")
+	searchCmd.Flags().Int("number", 0, "Filter by card number")
+	searchCmd.Flags().Int("priority", -1, "Filter by priority")
+	searchCmd.Flags().Int("project-id", 0, "Filter by project ID")
+	searchCmd.Flags().Int("sprint-id", 0, "Filter by sprint ID")
+	searchCmd.Flags().Int("workspace-id", 0, "Filter by workspace ID")
+	searchCmd.Flags().String("assignee-id", "", "Filter by assignee")
+	searchCmd.Flags().String("state", "", "Filter by card state")
+	searchCmd.Flags().String("status", "", "Filter by card status")
 }
