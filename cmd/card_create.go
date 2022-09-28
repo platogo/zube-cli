@@ -75,7 +75,7 @@ var cardCreateCmd = &cobra.Command{
 			},
 			{
 				Name:   "description",
-				Prompt: &survey.Multiline{Message: "Description?"},
+				Prompt: &survey.Editor{Message: "Description?", FileName: "*.md"},
 			},
 			{
 				Name: "labels",
