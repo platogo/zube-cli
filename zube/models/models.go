@@ -12,7 +12,7 @@ type Pagination struct {
 }
 
 type Resource interface {
-	Account | Card | Comment | Project | Label | Epic | Source | Workspace | Member
+	Account | Card | Comment | Project | Sprint | Label | Epic | Source | Workspace | Member
 }
 
 type Data[T Resource] struct {
@@ -236,4 +236,21 @@ type NewCardParameters struct {
 	SprintId     int    `json:"sprint_id"`
 	Title        string `json:"title"` // required
 	WorkspaceId  int    `json:"workspace_id"`
+}
+
+type Sprint struct {
+	Id          int    `json:"id"`
+	ClosedAt    string `json:"closed_at"`
+	Description string `json:"description"`
+	EndDate     string `json:"end_date"`
+	StartDate   string `json:"start_date"`
+	State       string `json:"state"`
+	Title       string `json:"title"`
+	Timestamps
+	ProjectId        int `json:"project_id"`
+	WorkspaceId      int `json:"workspace_id"`
+	OpenCardsCount   int `json:"open_cards_count"`
+	ClosedCardsCount int `json:"closed_cards_count"`
+	OpenPoints       int `json:"open_points"`
+	ClosedPoints     int `json:"closed_points"`
 }

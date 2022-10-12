@@ -30,3 +30,6 @@ format:
 
 install: ./bin/$(BINARY_NAME)
 	install ./bin/$(BINARY_NAME) $(PREFIX)/bin/
+
+completions.zsh:
+	${BINARY_NAME} completion zsh > /usr/local/share/zsh/site-functions/_zube

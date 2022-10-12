@@ -22,6 +22,12 @@ make
 make install
 ```
 
+Optionally install ZSH completions with:
+
+```bash
+make completions.zsh
+```
+
 `zube` expects a configuration file with your **client_id**.
 `zube` looks for this configuration file, in order, in:
 
