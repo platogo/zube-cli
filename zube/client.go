@@ -315,6 +315,19 @@ func (client *Client) FetchLabels(projectId int) []models.Label {
 	return response.Data
 }
 
+// Fetch all sprints for a given workspace
+func (client *Client) FetchSprints(workspaceId int) []models.Sprint {
+	var response models.PaginatedResponse[models.Sprint]
+
+	url := zubeURL(fmt.Sprintf("/api/workspaces/%d/sprints", workspaceId), Query{})
+	body, err := client.performAPIRequestURLNoBody(http.MethodGet, &url)
+
+	Check(err, fmt.Sprintf("failed to fetch sprints for workspace with ID: %d", workspaceId))
+
+	json.Unmarshal(body, &response)
+	return response.Data
+}
+
 // Wrapper around `performAPIRequestURL` for e.g. GET requests with no request body
 func (client *Client) performAPIRequestURLNoBody(method string, url *url.URL) ([]byte, error) {
 	return client.performAPIRequestURL(method, url, nil)

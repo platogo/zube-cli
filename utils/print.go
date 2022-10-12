@@ -9,6 +9,7 @@ import (
 	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube-cli/zube"
 	"github.com/platogo/zube-cli/zube/models"
+	"github.com/samber/lo"
 )
 
 func PrintCards(cards *[]models.Card) {
@@ -128,4 +129,17 @@ func PrintWorkspaces(workspaces *[]models.Workspace) {
 			workspace.Description,
 		)
 	}
+}
+
+func PrintSprints(sprints *[]models.Sprint) {
+	tab := tabular.New()
+
+	tab.Col("id", "ID", 6)
+	tab.Col("title", "Title", 20)
+	tab.Col("state", "State", 10)
+
+	format := tab.Print("id", "title", "state")
+	lo.ForEach(*sprints, func(sprint models.Sprint, _ int) {
+		fmt.Printf(format, BrightYellow(sprint.Id), sprint.Title, sprint.State)
+	})
 }
