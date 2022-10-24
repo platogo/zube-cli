@@ -2,6 +2,8 @@ BINARY_NAME=zube
 
 PREFIX := /usr/local
 
+.PHONY: test
+
 all: test build
 
 build:
@@ -22,7 +24,8 @@ run:
 	go run main.go
 
 test:
-	go test -v ./zube ./utils ./cache
+	go test -v ./utils ./cache
+	cd zube && go test -v ./...
 
 format:
 	@echo "Formatting the entire project"
