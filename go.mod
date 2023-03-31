@@ -8,7 +8,7 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/InVisionApp/tabular v0.3.0
 	github.com/logrusorgru/aurora v2.0.3+incompatible
-	github.com/platogo/zube-cli/zube v0.0.0-00010101000000-000000000000
+	github.com/platogo/zube-cli/zube v0.0.0-20221024122303-d94ef32e160d
 	github.com/samber/lo v1.33.0
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
