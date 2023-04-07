@@ -4,9 +4,9 @@ Copyright © 2022 Daniils Petrovs <daniils@platogo.com>
 package cmd
 
 import (
-	"github.com/platogo/zube-cli/utils"
-	"github.com/platogo/zube-cli/zube"
-	"github.com/platogo/zube-cli/zube/models"
+	"github.com/platogo/zube"
+	"github.com/platogo/zube-cli/internal/utils"
+	"github.com/platogo/zube/models"
 	"github.com/spf13/cobra"
 )
 

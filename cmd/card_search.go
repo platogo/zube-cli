@@ -21,8 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/platogo/zube-cli/utils"
-	"github.com/platogo/zube-cli/zube"
+	"github.com/platogo/zube"
+	"github.com/platogo/zube-cli/internal/utils"
 	"github.com/spf13/cobra"
 )
 

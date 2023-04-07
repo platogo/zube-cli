@@ -7,8 +7,8 @@ import (
 
 	"github.com/InVisionApp/tabular"
 	. "github.com/logrusorgru/aurora"
-	"github.com/platogo/zube-cli/zube"
-	"github.com/platogo/zube-cli/zube/models"
+	"github.com/platogo/zube"
+	"github.com/platogo/zube/models"
 	"github.com/samber/lo"
 )
 

@@ -21,7 +21,7 @@ import (
 	"os"
 
 	"github.com/logrusorgru/aurora"
-	"github.com/platogo/zube-cli/utils"
+	"github.com/platogo/zube-cli/internal/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

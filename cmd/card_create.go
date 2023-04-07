@@ -21,8 +21,8 @@ import (
 	"log"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/platogo/zube-cli/zube"
-	"github.com/platogo/zube-cli/zube/models"
+	"github.com/platogo/zube"
+	"github.com/platogo/zube/models"
 	"github.com/spf13/cobra"
 )
 

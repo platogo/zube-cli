@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/platogo/zube-cli/utils"
-	"github.com/platogo/zube-cli/zube"
+	"github.com/platogo/zube"
+	"github.com/platogo/zube-cli/internal/utils"
 )
 
 func TestNewQueryFromFlags(t *testing.T) {

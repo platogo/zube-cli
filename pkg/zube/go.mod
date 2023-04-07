@@ -1,11 +1,13 @@
 module github.com/platogo/zube
 
-go 1.19
+go 1.20
+
+replace github.com/platogo/cache => ../cache
 
 require (
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/markphelps/optional v0.10.0
-	github.com/platogo/zube-cli v0.0.0-20221012170351-71a729621e4e
+	github.com/platogo/cache v0.0.0-00010101000000-000000000000
 	github.com/spf13/viper v1.13.0
 )
 
