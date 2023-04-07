@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/markphelps/optional"
-	"github.com/platogo/zube-cli/zube/models"
+	"github.com/platogo/zube/models"
 )
 
 func Check(err error, msg string) {

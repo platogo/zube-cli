@@ -21,8 +21,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/platogo/zube-cli/utils"
-	"github.com/platogo/zube-cli/zube"
+	"github.com/platogo/zube"
+	"github.com/platogo/zube-cli/internal/utils"
 )
 
 // cardViewCmd represents the view command

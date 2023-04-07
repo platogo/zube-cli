@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/platogo/zube-cli/cache"
-	"github.com/platogo/zube-cli/zube/models"
+	"github.com/platogo/cache"
+	"github.com/platogo/zube/models"
 	"github.com/spf13/viper"
 )
 

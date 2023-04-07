@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/platogo/zube-cli/cache"
+	"github.com/platogo/cache"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

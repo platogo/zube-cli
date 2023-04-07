@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/platogo/zube-cli/zube"
+	"github.com/platogo/zube"
 	"github.com/spf13/pflag"
 )
 
