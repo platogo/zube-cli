@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 )
 
-const cacheDirName = "zube"
+var CacheDirName = "zube"
 
 // Cache file data structure
 type Cache struct {
@@ -19,27 +19,34 @@ type Cache struct {
 	Data interface{} `json:"data"` // resource data, taken directly from HTTP response body
 }
 
-// Initialize ETag based cache system
+// Initialize ETag based cache system with default name `zube`
 func Init() {
-	os.Mkdir(zubeCacheDir(), 0770)
+	InitWithName(CacheDirName)
+}
+
+// Initialize ETag based cache system
+func InitWithName(cacheName string) {
+	userCacheDir, _ := os.UserCacheDir()
+	CacheDirName = cacheName
+	os.Mkdir(filepath.Join(userCacheDir, CacheDirName), 0770)
 }
 
 // Purge all cache entries manually by deleting all ETag files
 func Purge() {
-	fmt.Println("Purging Zube cache...")
-	os.RemoveAll(zubeCacheDir())
-	Init()
+	fmt.Println("Purging cache...")
+	os.RemoveAll(cacheDir())
+	InitWithName(CacheDirName)
 }
 
 // Try to get a cache entry. Returns empty cache and falsy if does not exist, otherwise truthy.
 func Get(key string) (Cache, bool) {
-	file, err := os.OpenFile(filepath.Join(zubeCacheDir(), key), os.O_RDONLY, 0666)
-	defer file.Close()
+	file, err := os.OpenFile(filepath.Join(cacheDir(), key), os.O_RDONLY, 0666)
 	if errors.Is(err, os.ErrNotExist) {
 		return Cache{}, false
 	}
+	defer file.Close()
 
-	bytes, _ := ioutil.ReadAll(file)
+	bytes, _ := io.ReadAll(file)
 	var cache Cache
 	json.Unmarshal(bytes, &cache)
 	return cache, true
@@ -56,7 +63,7 @@ func Save(key, etag string, raw []byte) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(filepath.Join(zubeCacheDir(), key), cacheData, 0666)
+	err = os.WriteFile(filepath.Join(cacheDir(), key), cacheData, 0666)
 	if err != nil {
 		return err
 	}
@@ -64,7 +71,7 @@ func Save(key, etag string, raw []byte) error {
 	return nil
 }
 
-func zubeCacheDir() string {
+func cacheDir() string {
 	cacheDir, _ := os.UserCacheDir()
-	return filepath.Join(cacheDir, cacheDirName)
+	return filepath.Join(cacheDir, CacheDirName)
 }

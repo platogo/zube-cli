@@ -2,7 +2,6 @@ package cache
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -15,11 +14,11 @@ func setup() {
 	Init()
 	mockCacheData := Cache{Etag: "4b61-KvCvo1XgbWyNb1RjJY6Ci2/Z0DA", Data: "peko"}
 	data, _ := json.Marshal(mockCacheData)
-	ioutil.WriteFile(filepath.Join(zubeCacheDir(), existingKey), data, 0666)
+	os.WriteFile(filepath.Join(cacheDir(), existingKey), data, 0666)
 }
 
 func teardown() {
-	os.Remove(filepath.Join(zubeCacheDir(), existingKey))
+	os.Remove(filepath.Join(cacheDir(), existingKey))
 }
 
 func TestMain(m *testing.M) {
