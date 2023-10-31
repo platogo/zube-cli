@@ -143,3 +143,15 @@ func PrintSprints(sprints *[]models.Sprint) {
 		fmt.Printf(format, BrightYellow(sprint.Id), sprint.Title, sprint.State)
 	})
 }
+
+func PrintSources(sources *[]models.Source) {
+	tab := tabular.New()
+
+	tab.Col("id", "ID", 6)
+	tab.Col("name", "Name", 30)
+
+	format := tab.Print("id", "name")
+	lo.ForEach(*sources, func(source models.Source, _ int) {
+		fmt.Printf(format, BrightYellow(source.Id), source.Name)
+	})
+}
