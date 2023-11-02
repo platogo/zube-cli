@@ -147,7 +147,7 @@ func PrintSprints(sprints *[]models.Sprint) {
 func PrintSources(sources *[]models.Source) {
 	tab := tabular.New()
 
-	tab.Col("id", "ID", 6)
+	tab.Col("id", "ID", 10)
 	tab.Col("name", "Name", 30)
 
 	format := tab.Print("id", "name")
