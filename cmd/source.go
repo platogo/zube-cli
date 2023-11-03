@@ -25,7 +25,7 @@ import (
 // sourceCmd represents the epic command
 var sourceCmd = &cobra.Command{
 	Use:   "source",
-	Short: "A brief description of your command",
+	Short: "Manage Zube Github sources",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
