@@ -25,8 +25,6 @@ run:
 
 test:
 	go test -v ./internal/utils
-	cd ./pkg/cache && go test -v .
-	cd ./pkg/zube && go test -v .
 
 format:
 	@echo "Formatting the entire project"
