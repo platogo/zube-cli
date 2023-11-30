@@ -30,7 +30,7 @@ var epicLsCmd = &cobra.Command{
 		if client, err := zube.NewClient(); err == nil {
 			projectId, _ := cmd.Flags().GetInt("project-id")
 			epics := client.FetchEpics(projectId)
-			utils.PrintEpics(&epics)
+			utils.PrintItems(&epics)
 		}
 	},
 }

@@ -29,7 +29,7 @@ var sourceLsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if client, err := zube.NewClient(); err == nil {
 			sources := client.FetchSources()
-			utils.PrintSources(&sources)
+			utils.PrintItems(&sources)
 		}
 	},
 }

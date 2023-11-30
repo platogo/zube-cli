@@ -12,6 +12,25 @@ import (
 	"github.com/samber/lo"
 )
 
+func PrintItems(items interface{}) {
+	switch items := items.(type) {
+	case *[]models.Card:
+		PrintCards(items)
+	case *[]models.Comment:
+		PrintComments(items)
+	case *[]models.Epic:
+		PrintEpics(items)
+	case *[]models.Project:
+		PrintProjects(items)
+	case *[]models.Sprint:
+		PrintSprints(items)
+	case *[]models.Source:
+		PrintSources(items)
+	default:
+		fmt.Println("Unsupported type")
+	}
+}
+
 func PrintCards(cards *[]models.Card) {
 	const maxTitleLen = 60
 
@@ -57,6 +76,7 @@ func PrintCard(account *models.Account, project *models.Project, card *models.Ca
 	statusFormat := Underline(SnakeCaseToTitleCase(card.Status))
 	bodyFormat := Gray(22, card.Body)
 	cardUrl := zube.CardUrl(account, project, card)
+	fmt.Println("category:", card.CategoryName)
 
 	fmt.Println(titleFormat)
 	fmt.Println(statusFormat)
