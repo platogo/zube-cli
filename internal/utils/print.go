@@ -81,7 +81,6 @@ func PrintCard(account *models.Account, project *models.Project, card *models.Ca
 	statusFormat := Underline(SnakeCaseToTitleCase(card.Status))
 	bodyFormat := Gray(22, card.Body)
 	cardUrl := zube.CardUrl(account, project, card)
-	fmt.Println("category:", card.CategoryName)
 
 	fmt.Println(titleFormat)
 	fmt.Println(statusFormat)
