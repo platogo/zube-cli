@@ -27,7 +27,7 @@ var workspaceCmd = &cobra.Command{
 	Use:   "workspace",
 	Short: "Manage workspaces",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("workspace called")
+		fmt.Println("try to use `workspace ls` to list all workspaces")
 	},
 }
 

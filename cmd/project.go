@@ -27,7 +27,7 @@ var projectCmd = &cobra.Command{
 	Use:   "project",
 	Short: "Manage projects",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("project called")
+		fmt.Println("try to use `project ls` to list all projects")
 	},
 }
 

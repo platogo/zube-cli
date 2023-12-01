@@ -27,7 +27,7 @@ var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Zube CLI configuration commands",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("config called")
+		fmt.Println("try to use `config init` to initialize the config")
 	},
 }
 
