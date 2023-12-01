@@ -13,6 +13,7 @@ import (
 	"github.com/samber/lo"
 )
 
+// PrintItems prints a slice of items in a formatted table
 func PrintItems(items interface{}) {
 	switch items := items.(type) {
 	case *[]models.Card:
@@ -68,7 +69,7 @@ func PrintCard(account *models.Account, project *models.Project, card *models.Ca
 	var assigneeNames []string
 
 	for _, label := range card.Labels {
-		labels = append(labels, label.Name)
+		labels = append(labels, printfLabel(label))
 	}
 
 	for _, assignee := range card.Assignees {
@@ -188,7 +189,11 @@ func PrintLabels(labels *[]models.Label) {
 
 	format := tab.Print("id", "name")
 	lo.ForEach(*labels, func(label models.Label, _ int) {
-		hexColor := color.HEX(label.Color, false)
-		fmt.Printf(format, BrightYellow(label.Id), hexColor.Sprintf("%s", label.Name))
+		fmt.Printf(format, BrightYellow(label.Id), printfLabel(label))
 	})
+}
+
+func printfLabel(label models.Label) string {
+	hexColor := color.HEX(label.Color, false)
+	return hexColor.Sprint(label.Name)
 }
