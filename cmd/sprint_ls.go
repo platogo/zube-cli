@@ -17,6 +17,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
+	"log"
+
 	"github.com/platogo/zube"
 	"github.com/platogo/zube-cli/internal/utils"
 	"github.com/spf13/cobra"
@@ -25,19 +27,15 @@ import (
 // sprintLsCmd represents the sprintLs command
 var sprintLsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "List sprints in a workspace",
 	Run: func(cmd *cobra.Command, args []string) {
 		client, _ := zube.NewClient()
 
 		if workspaceId, err := cmd.Flags().GetInt("workspace-id"); err == nil && workspaceId != 0 {
 			sprints := client.FetchSprints(workspaceId)
 			utils.PrintItems(&sprints)
+		} else {
+			log.Fatal("workspace-id is required")
 		}
 	},
 }

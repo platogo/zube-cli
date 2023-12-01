@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 Daniils Petrovs <daniils@platogo.com>
-
 */
 package cmd
 
@@ -15,7 +14,7 @@ var cardCmd = &cobra.Command{
 	Use:   "card",
 	Short: "Manage cards",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("card called")
+		fmt.Println("try to use `card ls` to list cards")
 	},
 }
 

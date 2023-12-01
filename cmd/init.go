@@ -18,7 +18,7 @@ package cmd
 
 import (
 	"fmt"
-	"os"
+	"log"
 
 	"github.com/logrusorgru/aurora/v4"
 	"github.com/platogo/zube-cli/internal/utils"
@@ -34,8 +34,7 @@ var initCmd = &cobra.Command{
 		clientId := utils.StringPrompt("Enter your Zube Client ID:")
 
 		if clientId == "" {
-			fmt.Println(aurora.Red("Client ID cannot be blank!"))
-			os.Exit(1)
+			log.Fatal(aurora.Red("Client ID cannot be blank!"))
 		}
 
 		viper.Set("client_id", clientId)
