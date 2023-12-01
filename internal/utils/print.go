@@ -7,7 +7,7 @@ import (
 
 	"github.com/InVisionApp/tabular"
 	"github.com/gookit/color"
-	. "github.com/logrusorgru/aurora"
+	. "github.com/logrusorgru/aurora/v4"
 	"github.com/platogo/zube"
 	"github.com/platogo/zube/models"
 	"github.com/samber/lo"

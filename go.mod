@@ -6,7 +6,7 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/InVisionApp/tabular v0.3.0
 	github.com/gookit/color v1.5.4
-	github.com/logrusorgru/aurora v2.0.3+incompatible
+	github.com/logrusorgru/aurora/v4 v4.0.0
 	github.com/platogo/cache v1.0.0
 	github.com/platogo/zube v1.0.0
 	github.com/samber/lo v1.38.1
