@@ -31,7 +31,7 @@ var projectLsCmd = &cobra.Command{
 		client, _ := zube.NewClient()
 
 		projects := client.FetchProjects(&zube.Query{})
-		utils.PrintProjects(&projects)
+		utils.PrintItems(&projects)
 	},
 }
 

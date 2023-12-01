@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/logrusorgru/aurora"
+	"github.com/logrusorgru/aurora/v4"
 	"github.com/platogo/zube-cli/internal/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

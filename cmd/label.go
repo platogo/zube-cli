@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Daniils Petrovs <daniils@platogo.com>
+Copyright © 2023 Daniils Petrovs <daniils@platogo.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,23 +17,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"github.com/platogo/zube"
-	"github.com/platogo/zube-cli/internal/utils"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
-// epicLsCmd represents the epic ls command
-var sourceLsCmd = &cobra.Command{
-	Use:   "ls",
-	Short: "List all sources",
+// labelCmd represents the label command
+var labelCmd = &cobra.Command{
+	Use:   "label",
+	Short: "Manage Zube labels",
 	Run: func(cmd *cobra.Command, args []string) {
-		if client, err := zube.NewClient(); err == nil {
-			sources := client.FetchSources()
-			utils.PrintItems(&sources)
-		}
+		fmt.Println("use 'zube label ls' to list all labels")
 	},
 }
 
 func init() {
-	sourceCmd.AddCommand(sourceLsCmd)
+	rootCmd.AddCommand(labelCmd)
 }

@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Daniils Petrovs <daniils@platogo.com>
+Copyright © 2023 Daniils Petrovs <daniils@platogo.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,23 +17,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
+	"log"
+
 	"github.com/platogo/zube"
 	"github.com/platogo/zube-cli/internal/utils"
+	"github.com/platogo/zube/models"
 	"github.com/spf13/cobra"
 )
 
-// epicLsCmd represents the epic ls command
-var sourceLsCmd = &cobra.Command{
+// lsCmd represents the ls command
+var labelLsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "List all sources",
+	Short: "List all Zube labels",
+	Long:  `List all registered labels in a project. Will print the color of the label in supported terminals.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if client, err := zube.NewClient(); err == nil {
-			sources := client.FetchSources()
-			utils.PrintItems(&sources)
+		client, _ := zube.NewClient()
+
+		var labels []models.Label
+
+		if projectId, err := cmd.Flags().GetInt("project-id"); err == nil && projectId != 0 {
+			labels = client.FetchLabels(projectId)
+		} else {
+			log.Fatal("Project ID is required")
 		}
+
+		utils.PrintItems(&labels)
 	},
 }
 
 func init() {
-	sourceCmd.AddCommand(sourceLsCmd)
+	labelCmd.AddCommand(labelLsCmd)
+
+	labelLsCmd.Flags().Int("project-id", 0, "Filter by project ID")
 }

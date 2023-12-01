@@ -5,7 +5,8 @@ go 1.20
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/InVisionApp/tabular v0.3.0
-	github.com/logrusorgru/aurora v2.0.3+incompatible
+	github.com/gookit/color v1.5.4
+	github.com/logrusorgru/aurora/v4 v4.0.0
 	github.com/platogo/cache v1.0.0
 	github.com/platogo/zube v1.0.0
 	github.com/samber/lo v1.38.1
@@ -31,8 +32,9 @@ require (
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
+	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/term v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

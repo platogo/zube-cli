@@ -37,7 +37,7 @@ to quickly create a Cobra application.`,
 
 		if workspaceId, err := cmd.Flags().GetInt("workspace-id"); err == nil && workspaceId != 0 {
 			sprints := client.FetchSprints(workspaceId)
-			utils.PrintSprints(&sprints)
+			utils.PrintItems(&sprints)
 		}
 	},
 }

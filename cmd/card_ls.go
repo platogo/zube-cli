@@ -29,7 +29,7 @@ var cardLsCmd = &cobra.Command{
 			cards = client.FetchCards(&query)
 		}
 
-		utils.PrintCards(&cards)
+		utils.PrintItems(&cards)
 	},
 }
 
