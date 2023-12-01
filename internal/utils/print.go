@@ -6,6 +6,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/InVisionApp/tabular"
+	"github.com/gookit/color"
 	. "github.com/logrusorgru/aurora"
 	"github.com/platogo/zube"
 	"github.com/platogo/zube/models"
@@ -26,6 +27,8 @@ func PrintItems(items interface{}) {
 		PrintSprints(items)
 	case *[]models.Source:
 		PrintSources(items)
+	case *[]models.Label:
+		PrintLabels(items)
 	default:
 		fmt.Println("Unsupported type")
 	}
@@ -173,5 +176,18 @@ func PrintSources(sources *[]models.Source) {
 	format := tab.Print("id", "name")
 	lo.ForEach(*sources, func(source models.Source, _ int) {
 		fmt.Printf(format, BrightYellow(source.Id), source.Name)
+	})
+}
+
+func PrintLabels(labels *[]models.Label) {
+	tab := tabular.New()
+
+	tab.Col("id", "ID", 10)
+	tab.Col("name", "Name", 30)
+
+	format := tab.Print("id", "name")
+	lo.ForEach(*labels, func(label models.Label, _ int) {
+		hexColor := color.HEX(label.Color, false)
+		fmt.Printf(format, BrightYellow(label.Id), hexColor.Sprintf("%s", label.Name))
 	})
 }
