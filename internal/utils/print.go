@@ -29,6 +29,8 @@ func PrintItems(items interface{}) {
 		PrintSources(items)
 	case *[]models.Label:
 		PrintLabels(items)
+	case *[]models.Workspace:
+		PrintWorkspaces(items)
 	default:
 		fmt.Println("Unsupported type")
 	}
