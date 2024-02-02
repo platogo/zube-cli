@@ -8,6 +8,8 @@ import (
 
 	"github.com/platogo/zube"
 	"github.com/spf13/pflag"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // Returns a string truncated to the given `maxLen`
@@ -31,7 +33,7 @@ func TruncateString(s string, maxLen int) string {
 // Converts a snake case string (e.g. `in_progress`) to title case (e.g. `In Progress`)
 func SnakeCaseToTitleCase(s string) string {
 	spacedWords := strings.ReplaceAll(s, "_", " ")
-	return strings.Title(spacedWords)
+	return cases.Title(language.English).String(spacedWords)
 }
 
 // Constructs a zube `Query` from Cobra flags
