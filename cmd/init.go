@@ -41,6 +41,7 @@ var initCmd = &cobra.Command{
 		viper.WriteConfig()
 		fmt.Println(aurora.Green("Config initialized succesfully!"))
 		fmt.Println("Don't forget to place your Zube private key at ~/.ssh/zube_api_key.pem")
+		fmt.Println("See https://zube.io/docs/api#generating-a-private-key for more information")
 	},
 }
 
