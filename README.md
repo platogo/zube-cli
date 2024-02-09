@@ -13,7 +13,7 @@
 
 ## Setup
 
-### Build & Install
+### Manual install
 
 Make sure you have `go` and `make` installed, then run
 
@@ -27,6 +27,17 @@ Optionally install ZSH completions with:
 ```bash
 make completions.zsh
 ```
+
+### With Nix
+
+Clone this repository and run
+
+```bash
+nix-build
+nix profile install ./result
+```
+
+### Configuration
 
 `zube` expects a configuration file with your **client_id**.
 `zube` looks for this configuration file, in order, in:
@@ -106,7 +117,7 @@ Read [CONTRIBUTING](CONTRIBUTING.md)
 - [ ] Filter support by name instead of just by IDs
 - [ ] Optionally dump response data as JSON
 - [ ] `zubed` daemon for periodic update polling
-- [ ] Move `zube` functionality into dedicated `zube-go` library
+- [x] Move `zube` functionality into dedicated `zube-go` library
 - Internal
   - [x] request caching
   - [ ] smart automatic auth using browser cookie store access
