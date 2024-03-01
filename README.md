@@ -11,10 +11,27 @@
 - Create cards same way you would using the web client
 - Client-side request caching
 
-## Setup
+## Install
 
-### Manual install
+<details>
+<summary>Using Nix</summary>
+Install using profiles:
 
+```bash
+nix profile install github:platogo/zube-cli
+```
+</details>
+
+<details>
+<summary>Using Homebrew</summary>
+
+```bash
+brew install platogo/tap/zube-cli
+```
+</details>
+
+<details>
+<summary>Manually</summary>
 Make sure you have `go` and `make` installed, then run
 
 ```bash
@@ -27,15 +44,7 @@ Optionally install ZSH completions with:
 ```bash
 make completions.zsh
 ```
-
-### With Nix
-
-Clone this repository and run
-
-```bash
-nix-build
-nix profile install ./result
-```
+</details>
 
 ### Configuration
 
