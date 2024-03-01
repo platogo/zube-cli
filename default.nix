@@ -18,7 +18,7 @@ buildGoModule rec {
     [ "-s" "-w" "-X main.Version=${version}" "-X main.Commit=${version}" ];
 
   meta = with lib; {
-    description = "Simple command-line snippet manager, written in Go";
+    description = "Interact with Zube from the CLI";
     homepage = "https://github.com/platogo/zube-cli";
     license = licenses.gpl3;
     maintainers = with maintainers; [ danirukun ];
